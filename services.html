@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2P POWER - SERVICES</title>
+    
+    <!-- นำเข้าฟอนต์ชุดเดียวกับทุกหน้า (Sarabun และ Inter) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            /* พื้นหลังไล่สีฟ้าเทาหม่นละมุน คุมธีมพรรคเหมือนหน้าอื่น */
+            background: linear-gradient(180deg, #cbd5e1 0%, #94a3b8 100%);
+            font-family: 'Sarabun', 'Inter', sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: #334155; 
+            overflow: hidden;
+            text-align: center;
+            padding: 20px;
+            padding-top: 80px; 
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* แถบเมนูด้านบนสไตล์กระจกฝ้า คุมโทนเดิม */
+        .navbar {
+            position: fixed; 
+            top: 0;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between; 
+            align-items: center;
+            padding: 25px 80px;
+            background-color: rgba(203, 213, 225, 0.7); 
+            backdrop-filter: blur(12px); 
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(51, 65, 85, 0.08); 
+            z-index: 1000;
+        }
+
+        .navbar .logo {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.15rem;
+            font-weight: 600;
+            letter-spacing: 2px;
+            color: #1e293b;
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            gap: 40px; 
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #475569; 
+            font-size: 0.9rem;
+            font-weight: 400;
+            letter-spacing: 0.5px;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover, 
+        .nav-links a.active {
+            color: #0369a1; 
+            font-weight: 500;
+        }
+
+        /* กล่องเนื้อหาตรงกลาง */
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px; 
+            max-width: 500px;
+            width: 100%;
+        }
+
+        /* กล่องกระจกฝ้า Coming Soon ให้ดูเรียบหรูโมเดิร์น */
+        .status-card {
+            width: 100%;
+            padding: 40px 30px;
+            background-color: rgba(255, 255, 255, 0.35); /* ขาวใสโปร่งแสง */
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+        }
+
+        .main-title {
+            font-family: 'Inter', sans-serif;
+            font-size: 2.8rem; 
+            font-weight: 600;
+            letter-spacing: 4px; 
+            color: #1e293b;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        .sub-title {
+            font-family: 'Sarabun', sans-serif;
+            font-size: 1.05rem;
+            font-weight: 400;
+            letter-spacing: 0.5px;
+            color: #0369a1; /* สีฟ้าน้ำทะเลลึก */
+        }
+
+        /* Responsive สำหรับมือถือ */
+        @media (max-width: 600px) {
+            body {
+                padding-top: 140px; 
+            }
+            .navbar {
+                flex-direction: column; 
+                gap: 15px;
+                padding: 20px;
+            }
+            .nav-links {
+                gap: 20px;
+            }
+            .main-title {
+                font-size: 2rem;
+                letter-spacing: 2px;
+            }
+            .sub-title {
+                font-size: 0.95rem;
+            }
+            .status-card {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- แถบเมนูโครงสร้างและฟอนต์เดียวกับทุกหน้า -->
+    <nav class="navbar">
+        <div class="logo">2P POWER</div>
+        <ul class="nav-links">
+            <li><a href="index.html">HOME</a></li>
+            <li><a href="about.html">ABOUT 2P</a></li>
+            <li><a href="services.html" class="active">SERVICES</a></li>
+            <li><a href="contact.html">CONTACT</a></li>
+        </ul>
+    </nav>
+
+    <!-- เนื้อหาหน้าเซอวิช -->
+    <div class="container">
+        <div class="status-card">
+            <h1 class="main-title">Coming Soon</h1>
+            <p class="sub-title">นโยบายจากพรรคกำลังตามมาเร็วๆนี้</p>
+        </div>
+    </div>
+
+</body>
+</html>
