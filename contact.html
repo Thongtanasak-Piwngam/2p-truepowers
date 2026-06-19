@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2P POWER - CONTACT</title>
+    
+    <!-- นำเข้าฟอนต์ชุดเดียวกับทุกหน้า (Sarabun และ Inter) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            /* พื้นหลังไล่สีฟ้าเทาหม่นละมุน คุมธีมของพรรค */
+            background: linear-gradient(180deg, #cbd5e1 0%, #94a3b8 100%);
+            font-family: 'Sarabun', 'Inter', sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: #334155; 
+            overflow: hidden;
+            text-align: center;
+            padding: 20px;
+            padding-top: 80px; 
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* แถบเมนูด้านบนสไตล์กระจกฝ้า คุมโทนเดิม */
+        .navbar {
+            position: fixed; 
+            top: 0;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between; 
+            align-items: center;
+            padding: 25px 80px;
+            background-color: rgba(203, 213, 225, 0.7); 
+            backdrop-filter: blur(12px); 
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(51, 65, 85, 0.08); 
+            z-index: 1000;
+        }
+
+        .navbar .logo {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.15rem;
+            font-weight: 600;
+            letter-spacing: 2px;
+            color: #1e293b;
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            gap: 40px; 
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #475569; 
+            font-size: 0.9rem;
+            font-weight: 400;
+            letter-spacing: 0.5px;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover, 
+        .nav-links a.active {
+            color: #0369a1; 
+            font-weight: 500;
+        }
+
+        /* กล่องเนื้อหาตรงกลาง */
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px; 
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .main-title {
+            font-family: 'Sarabun', sans-serif;
+            font-size: 2.5rem; 
+            font-weight: 600;
+            letter-spacing: 1px; 
+            color: #1e293b;
+        }
+
+        /* ปุ่มลิงก์ Instagram แบบกระจกฝ้า มินิมอลเรียบหรู */
+        .instagram-card {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            width: 100%;
+            padding: 18px 30px;
+            background-color: rgba(255, 255, 255, 0.4); /* กล่องขาวกึ่งใส */
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 14px;
+            text-decoration: none;
+            color: #1e293b;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* เอฟเฟกต์เวลาชี้เมาส์ */
+        .instagram-card:hover {
+            transform: translateY(-4px);
+            background-color: rgba(255, 255, 255, 0.6);
+            border-color: rgba(3, 105, 161, 0.3); /* ขอบฟ้าจางๆ */
+            box-shadow: 0 8px 25px rgba(3, 105, 161, 0.1);
+        }
+
+        /* ไอคอน IG คมชัดสูง */
+        .instagram-icon {
+            width: 28px;
+            height: 28px;
+            fill: #0369a1; /* ใช้สีฟ้าน้ำทะเลลึกให้แมตช์ธีมแทนสีชมพูฉูดฉาด ดูโปรขึ้นมาก */
+            transition: fill 0.3s ease;
+        }
+
+        .instagram-card:hover .instagram-icon {
+            fill: #0284c7; /* สว่างขึ้นอีกนิดตอนเมาส์ชี้ */
+        }
+
+        /* ชื่อไอดีไอจี */
+        .instagram-username {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.15rem;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+
+        /* Responsive สำหรับมือถือ */
+        @media (max-width: 600px) {
+            body {
+                padding-top: 140px; 
+            }
+            .navbar {
+                flex-direction: column; 
+                gap: 15px;
+                padding: 20px;
+            }
+            .nav-links {
+                gap: 20px;
+            }
+            .main-title {
+                font-size: 2rem;
+            }
+            .instagram-username {
+                font-size: 1.05rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- แถบเมนูโครงสร้างและฟอนต์เดียวกับทุกหน้า -->
+    <nav class="navbar">
+        <div class="logo">2P POWER</div>
+        <ul class="nav-links">
+            <li><a href="index.html">HOME</a></li>
+            <li><a href="about.html">ABOUT 2P</a></li>
+            <li><a href="services.html">SERVICES</a></li>
+            <li><a href="contact.html" class="active">CONTACT</a></li>
+        </ul>
+    </nav>
+
+    <!-- เนื้อหาหน้าคอนแท็ค -->
+    <div class="container">
+        <h1 class="main-title">ช่องทางการติดต่อ</h1>
+        
+        <!-- ลิงก์ไป Instagram (เปลี่ยนตรง href และชื่อไอดีได้เลยครับ) -->
+        <a href="https://www.instagram.com/2p.truepowers?igsh=MWZmdzQ2aHZjZzA0NQ%3D%3D" target="_blank" class="instagram-card">
+            <!-- โลโก้เวกเตอร์ Instagram คมชัดไม่แตก -->
+            <svg class="instagram-icon" viewBox="0 0 24 24">
+                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.051.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/>
+            </svg>
+            <!-- ข้อความชื่อไอจี -->
+            <span class="instagram-username">@2p.TruePowers.official</span>
+        </a>
+    </div>
+
+</body>
+</html>
