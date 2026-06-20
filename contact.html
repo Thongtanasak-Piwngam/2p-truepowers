@@ -34,7 +34,7 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* แถบเมนูด้านบนสไตล์กระจกฝ้า คุมโทนเดิม */
+       /* แถบเมนูด้านบนที่ดรอปความสว่างลงให้เนียนไปกับสีพื้นหลัง */
         .navbar {
             position: fixed; 
             top: 0;
@@ -43,21 +43,36 @@
             display: flex;
             justify-content: space-between; 
             align-items: center;
-            padding: 25px 80px;
-            background-color: rgba(203, 213, 225, 0.7); 
+            padding: 15px 80px; 
+            background-color: rgba(203, 213, 225, 0.7); /* ใช้สีเดียวกับพื้นหลังด้านบนแต่โปร่งแสง */
             backdrop-filter: blur(12px); 
             -webkit-backdrop-filter: blur(12px);
             border-bottom: 1px solid rgba(51, 65, 85, 0.08); 
             z-index: 1000;
         }
 
-        .navbar .logo {
-            font-family: 'Inter', sans-serif;
-            font-size: 1.15rem;
-            font-weight: 600;
-            letter-spacing: 2px;
-            color: #1e293b;
+        /* ----- อัปเดตสไตล์: เหลือแค่โลโก้โปร่งใสเพียวๆ คลีนๆ ----- */
+        .navbar .logo-container {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
         }
+
+        .navbar .logo-img {
+            width: 75px;       
+            height: 75px;      
+            object-fit: contain; /* ปรับเป็น contain เพื่อให้แสดงสัดส่วนโลโก้แท้จริงที่โปร่งใสได้ครบถ้วน */
+            border: none;        /* ไม่มีขอบ */
+            box-shadow: none;    /* ไม่มีเงา เหลือแค่เนื้อโลโก้เน้นๆ */
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* เอฟเฟกต์ดึงดูดสายตาเล็กน้อยเวลาเมาส์ชี้ */
+        .navbar .logo-container:hover .logo-img {
+            transform: scale(1.05); /* ขยายขนาดขึ้นนิดหน่อยแบบนุ่มนวล */
+        }
+        /* ------------------------------------------- */
+
 
         .nav-links {
             list-style: none;
@@ -169,10 +184,13 @@
 
     <!-- แถบเมนู -->
     <nav class="navbar">
-        <div class="logo">2P POWER</div>
+        <a href="index.html" class="logo-container">
+            <img src="logo3.png" alt="2P POWER Logo" class="logo-img">
+        </a>
         <ul class="nav-links">
             <li><a href="index.html">HOME</a></li>
             <li><a href="about.html">ABOUT 2P</a></li>
+            <li><a href="members.html" >MEMBERS</a></li>
             <li><a href="services.html">SERVICES</a></li>
             <li><a href="contact.html" class="active">CONTACT</a></li>
         </ul>
