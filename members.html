@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MEMBERS - 2P POWER</title>
+    
+    <!-- นำเข้าฟอนต์ชุดเดียวกับทุกหน้า (Sarabun และ Inter) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            /* พื้นหลังไล่สีฟ้าเทาหม่นละมุน คุมธีมพรรคสอดคล้องทุกหน้า */
+            background: linear-gradient(180deg, #cbd5e1 0%, #94a3b8 100%);
+            font-family: 'Sarabun', 'Inter', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #334155; 
+            overflow-y: auto;
+            padding: 20px;
+            padding-top: 150px;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* แถบเมนูด้านบนสไตล์กระจกฝ้า คุมโทนเดิม */
+        .navbar {
+            position: fixed; 
+            top: 0;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between; 
+            align-items: center;
+            padding: 25px 80px;
+            background-color: rgba(203, 213, 225, 0.7); 
+            backdrop-filter: blur(12px); 
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(51, 65, 85, 0.08); 
+            z-index: 1000;
+        }
+
+        .navbar .logo {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.15rem;
+            font-weight: 600;
+            letter-spacing: 2px;
+            color: #1e293b;
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            gap: 40px; 
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #475569; 
+            font-size: 0.9rem;
+            font-weight: 400;
+            letter-spacing: 0.5px;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover, 
+        .nav-links a.active {
+            color: #0369a1; 
+            font-weight: 500;
+        }
+
+        /* กล่องครอบเนื้อหา */
+        .container {
+            max-width: 800px;
+            width: 100%;
+            margin-bottom: 80px;
+        }
+
+        /* หัวข้อหลักชัดเจน สุขุม */
+        .main-title {
+            font-family: 'Inter', 'Sarabun', sans-serif;
+            font-size: 2.5rem; 
+            font-weight: 600;
+            letter-spacing: 2px; 
+            color: #1e293b;
+            text-align: center;
+            margin-bottom: 8px;
+        }
+
+        .school-name {
+            font-size: 1rem;
+            color: #475569;
+            text-align: center;
+            letter-spacing: 1px;
+            margin-bottom: 50px;
+            font-weight: 400;
+        }
+
+        /* เซกชันกล่องรายชื่อกลุ่ม */
+        .section-box {
+            margin-bottom: 40px;
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.25); 
+            padding: 30px;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+        }
+
+        /* หัวข้อฝ่ายต่างๆ */
+        .section-box h2 {
+            font-size: 1.25rem;
+            color: #1e293b;
+            margin-bottom: 20px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid #64748b; 
+            padding-bottom: 8px;
+        }
+
+        /* ตารางรายชื่อแบบมีรูปภาพ */
+        .member-table {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .member-row {
+            display: flex;
+            padding: 12px 10px;
+            border-bottom: 1px solid rgba(51, 65, 85, 0.08);
+            align-items: center;
+            gap: 20px;
+            transition: background-color 0.2s ease, transform 0.2s ease;
+            border-radius: 8px;
+        }
+
+        /* เอฟเฟกต์ไฮไลท์เวลาชี้แต่ละแถวรายชื่อ */
+        .member-row:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+            transform: translateX(4px);
+        }
+
+        .member-row:last-child {
+            border-bottom: none;
+        }
+
+        /* ดีไซน์กรอบรูปทรงกลมมินิมอล */
+        .avatar-frame {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.6); /* สีขาวกึ่งใสสลับตอนไม่มีรูป */
+            border: 2px solid rgba(255, 255, 255, 0.8);
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-shrink: 0;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            transition: transform 0.2s ease;
+        }
+
+        /* ถ้าเมาส์ชี้ แถวรูปจะขยายนิดนึงให้ดูมีมิติ */
+        .member-row:hover .avatar-frame {
+            transform: scale(1.08);
+            border-color: #0369a1;
+        }
+
+        .avatar-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            /* สไตล์เริ่มต้น: ใช้ฟิลเตอร์สีขาว/เทาคลีนๆ ไว้ก่อนตามที่ขอ */
+            background-color: #f1f5f9; 
+        }
+
+        /* ข้อความฝั่งชื่อ */
+        .member-name {
+            flex: 1;
+            font-size: 1.05rem;
+            font-weight: 500;
+            color: #1e293b;
+        }
+
+        /* ข้อความฝั่งตำแหน่ง */
+        .member-role {
+            font-size: 1rem;
+            color: #0369a1; 
+            font-weight: 500;
+            text-align: right;
+        }
+
+        /* ไฮไลท์สำหรับตำแหน่งประธาน */
+        .leader-row {
+            background-color: rgba(255, 255, 255, 0.15);
+            border-left: 4px solid #0369a1;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .leader-row .avatar-frame {
+            width: 60px; /* รูปประธานใหญ่กว่านิดหน่อยให้เด่น */
+            height: 60px;
+            border-color: #0369a1;
+        }
+
+        .leader-row .member-name {
+            font-size: 1.15rem;
+            font-weight: 600;
+        }
+        
+        .leader-row .member-role {
+            font-size: 1.05rem;
+            font-weight: 600;
+            background: rgba(3, 105, 161, 0.1);
+            padding: 4px 14px;
+            border-radius: 20px;
+        }
+
+        /* Responsive สำหรับมือถือ */
+        @media (max-width: 600px) {
+            body {
+                padding-top: 140px; 
+            }
+            .navbar {
+                flex-direction: column; 
+                gap: 15px;
+                padding: 20px;
+            }
+            .nav-links {
+                gap: 20px;
+            }
+            .main-title {
+                font-size: 2rem;
+            }
+            .section-box {
+                padding: 20px;
+            }
+            .member-row {
+                gap: 12px;
+                padding: 12px 5px;
+            }
+            .member-row:hover {
+                transform: none; /* บนมือถือไม่เลื่อนข้าง */
+            }
+            .member-role {
+                text-align: left;
+                font-size: 0.95rem;
+                margin-left: 64px; /* ดันข้อความตำแหน่งให้ตรงกับบล็อกชื่อไม่เบียดใต้รูป */
+                margin-top: -4px;
+            }
+            .leader-row .member-role {
+                margin-left: 72px;
+                display: inline-block;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- แถบเมนูคุมโทนเดิม -->
+    <nav class="navbar">
+        <div class="logo">2P POWER</div>
+        <ul class="nav-links">
+            <li><a href="index.html">HOME</a></li>
+            <li><a href="about.html">ABOUT 2P</a></li>
+            <li><a href="members.html" class="active">MEMBERS</a></li>
+            <li><a href="services.html">SERVICES</a></li>
+            <li><a href="contact.html">CONTACT</a></li>
+        </ul>
+    </nav>
+
+    <!-- เนื้อหาโครงสร้างรายชื่อพร้อมรูปภาพ -->
+    <div class="container">
+        
+        <h1 class="main-title">Members 2P POWER</h1>
+        <p class="school-name">รายชื่อสมาชิกผู้ลงสมัครรับเลือกตั้งสภานักเรียนโรงเรียนท่ามะกาวิทยาคม ปีการศึกษา 2569</p>
+
+        <!-- กลุ่มที่ 1: ฝ่ายบริหารหลัก -->
+        <div class="section-box">
+            <h2>ฝ่ายบริหารหลัก</h2>
+            <div class="member-table">
+                
+                <!-- แถวผู้นำพรรค/ประธาน -->
+                <div class="member-row leader-row">
+                    <div class="avatar-frame">
+                        <!-- ใส่รูปภาพตรง src="ชื่อไฟล์รูปภาพ.jpg" (ตอนนี้ใส่รูปสีขาวจำลองไว้ให้ก่อน) -->
+                        <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23f8fafc'/></svg>" alt="ประธาน" class="avatar-img">
+                    </div>
+                    <span class="member-name">นายกัณตพัฑน์ เพ็งจันทร์</span>
+                    <span class="member-role">ประธานสภานักเรียน</span>
+                </div>
+
+                <!-- รองประธาน 1 -->
+                <div class="member-row">
+                    <div class="avatar-frame">
+                        <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23f1f5f9'/></svg>" alt="สมาชิก" class="avatar-img">
+                    </div>
+                    <span class="member-name">ชื่อ - นามสกุล ตัวอย่าง</span>
+                    <span class="member-role">รองประธานคนที่ 1</span>
+                </div>
+
+                <!-- รองประธาน 2 -->
+                <div class="member-row">
+                    <div class="avatar-frame">
+                        <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23f1f5f9'/></svg>" alt="สมาชิก" class="avatar-img">
+                    </div>
+                    <span class="member-name">ชื่อ - นามสกุล ตัวอย่าง</span>
+                    <span class="member-role">รองประธานคนที่ 2</span>
+                </div>
+
+                <div class="member-row">
+                    <div class="avatar-frame">
+                        <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23f1f5f9'/></svg>" alt="สมาชิก" class="avatar-img">
+                    </div>
+                    <span class="member-name">ชื่อ - นามสกุล ตัวอย่าง</span>
+                    <span class="member-role">เหรัญญิก</span>
+                </div>
+
+                <div class="member-row">
+                    <div class="avatar-frame">
+                        <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23f1f5f9'/></svg>" alt="สมาชิก" class="avatar-img">
+                    </div>
+                    <span class="member-name">ชื่อ - นามสกุล ตัวอย่าง</span>
+                    <span class="member-role">เลขานุการ</span>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- กลุ่มที่ 2: ฝ่ายดำเนินงานและกิจกรรม -->
+        <div class="section-box">
+            <h2>คณะทำงาน</h2>
+            <div class="member-table">
+
+                <div class="member-row">
+                    <div class="avatar-frame">
+                        <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23f1f5f9'/></svg>" alt="สมาชิก" class="avatar-img">
+                    </div>
+                    <span class="member-name">ชื่อ - นามสกุล ตัวอย่าง</span>
+                    <span class="member-role">สมาชิกผู้สมัครสมานักเรียน</span>
+                </div>
+
+                <div class="member-row">
+                    <div class="avatar-frame">
+                        <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23f1f5f9'/></svg>" alt="สมาชิก" class="avatar-img">
+                    </div>
+                    <span class="member-name">ชื่อ - นามสกุล ตัวอย่าง</span>
+                    <span class="member-role">สมาชิกผู้สมัครสมานักเรียน</span>
+                </div>
+                <div class="member-row">
+                    <div class="avatar-frame">
+                        <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23f1f5f9'/></svg>" alt="สมาชิก" class="avatar-img">
+                    </div>
+                    <span class="member-name">ชื่อ - นามสกุล ตัวอย่าง</span>
+                    <span class="member-role">สมาชิกผู้สมัครสมานักเรียน</span>
+                </div>
+
+                <div class="member-row">
+                    <div class="avatar-frame">
+                        <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23f1f5f9'/></svg>" alt="สมาชิก" class="avatar-img">
+                    </div>
+                    <span class="member-name">ชื่อ - นามสกุล ตัวอย่าง</span>
+                    <span class="member-role">สมาชิกผู้สมัครสมานักเรียน</span>
+                </div>
+                <div class="member-row">
+                    <div class="avatar-frame">
+                        <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23f1f5f9'/></svg>" alt="สมาชิก" class="avatar-img">
+                    </div>
+                    <span class="member-name">ชื่อ - นามสกุล ตัวอย่าง</span>
+                    <span class="member-role">สมาชิกผู้สมัครสมานักเรียน</span>
+                </div>
+
+                <div class="member-row">
+                    <div class="avatar-frame">
+                        <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23f1f5f9'/></svg>" alt="สมาชิก" class="avatar-img">
+                    </div>
+                    <span class="member-name">ชื่อ - นามสกุล ตัวอย่าง</span>
+                    <span class="member-role">สมาชิกผู้สมัครสมานักเรียน</span>
+                </div>
+
+
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>
