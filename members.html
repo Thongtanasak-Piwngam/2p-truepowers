@@ -1,985 +1,1113 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="th">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>MEMBERS - 2P POWER</title>
-    
-    <!-- นำเข้าฟอนต์ชุดเดิม (Sarabun และ Inter) -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Sarabun:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Sarabun:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
 
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
 
+      body {
+        min-height: 100vh;
+        background: linear-gradient(180deg, #cbd5e1 0%, #94a3b8 100%);
+        font-family: "Sarabun", "Inter", sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        color: #334155;
+        overflow-y: auto;
+        padding: 20px;
+        padding-top: 150px;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      /* แถบเมนูด้านบน */
+      .navbar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 80px;
+        background-color: rgba(203, 213, 225, 0.7);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-bottom: 1px solid rgba(51, 65, 85, 0.08);
+        z-index: 1000;
+      }
+
+      .navbar .logo-container {
+        display: flex;
+        align-items: center;
+        text-decoration: none;
+      }
+
+      .navbar .logo-img {
+        width: 75px;
+        height: 75px;
+        object-fit: contain;
+        border: none;
+        box-shadow: none;
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .navbar .logo-container:hover .logo-img {
+        transform: scale(1.05);
+      }
+
+      .nav-links {
+        list-style: none;
+        display: flex;
+        gap: 40px;
+      }
+
+      .nav-links a {
+        text-decoration: none;
+        color: #475569;
+        font-size: 0.9rem;
+        font-weight: 400;
+        letter-spacing: 0.5px;
+        transition: color 0.3s ease;
+      }
+
+      .nav-links a:hover,
+      .nav-links a.active {
+        color: #0369a1;
+        font-weight: 500;
+      }
+
+      /* กล่องครอบเนื้อหา */
+      .container {
+        max-width: 800px;
+        width: 100%;
+        margin-bottom: 80px;
+      }
+
+      .main-title {
+        font-family: "Inter", "Sarabun", sans-serif;
+        font-size: 2.5rem;
+        font-weight: 600;
+        letter-spacing: 2px;
+        color: #1e293b;
+        text-align: center;
+        margin-bottom: 8px;
+      }
+
+      .school-name {
+        font-size: 1rem;
+        color: #475569;
+        text-align: center;
+        letter-spacing: 1px;
+        margin-bottom: 50px;
+        font-weight: 400;
+      }
+
+      /* เซกชันกล่องรายชื่อกลุ่ม */
+      .section-box {
+        margin-bottom: 40px;
+        width: 100%;
+        background-color: rgba(255, 255, 255, 0.25);
+        padding: 30px;
+        border-radius: 16px;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+      }
+
+      .section-box h2 {
+        font-size: 1.25rem;
+        color: #1e293b;
+        margin-bottom: 20px;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        border-bottom: 2px solid #64748b;
+        padding-bottom: 8px;
+      }
+
+      /* ระบบ Dropdown รายชื่อสมาชิก */
+      .member-table {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .member-row {
+        background: rgba(255, 255, 255, 0.4); 
+        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        overflow: hidden;
+        transition: all 0.3s ease;
+        display: block; 
+        padding: 0;
+      }
+
+      .member-row[open] {
+        background: rgba(255, 255, 255, 0.85);
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+      }
+
+      /* แถบสรุปชื่อที่กดคลิกได้ (อัปเดตเป็น Grid แก้ปัญหามือถือตัวอักษรเกยกัน) */
+      .member-summary {
+        padding: 16px 20px;
+        cursor: pointer;
+        list-style: none;
+        display: grid;
+        grid-template-columns: auto 1fr auto; /* ล็อกกรอบ: อวาตาร์ | ข้อความตรงกลาง | ปุ่มเครื่องหมาย */
+        align-items: center;
+        column-gap: 20px;
+        row-gap: 4px;
+        user-select: none;
+      }
+
+      .member-summary::-webkit-details-marker {
+        display: none;
+      }
+
+      .member-summary::after {
+        content: "+";
+        grid-column: 3;
+        grid-row: 1 / span 2; /* ล็อกให้อยู่ฝั่งขวาสุด คลุมแนวตั้ง 2 แถว */
+        font-family: "Inter", sans-serif;
+        font-size: 1.3rem;
+        color: #0369a1;
+        transition: transform 0.3s ease;
+      }
+
+      .member-row[open] .member-summary::after {
+        content: "−";
+        transform: rotate(180deg);
+      }
+
+      /* ปรับโครงสร้างภายในเมื่อเปิดคลิก: รูปซ้าย ข้อความขวา */
+      .member-content {
+        padding: 0 20px 20px 20px;
+        display: flex;
+        flex-direction: row; 
+        gap: 24px;
+        align-items: flex-start;
+        animation: fadeIn 0.4s ease-out;
+      }
+
+      /* ล็อกสัดส่วนรูปภาพเป็น 9:16 แนวตั้ง */
+      .image-wrapper {
+        position: relative;
+        width: 140px;        
+        padding-top: 248px;  /* อัตราส่วน 9:16 (140 * 16 / 9) */
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+        flex-shrink: 0;      
+      }
+
+      .member-img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover; 
+        background-color: #cbd5e1;
+      }
+
+      /* ข้อมูลรายละเอียดด้านขวา */
+      .member-details {
+        flex-grow: 1;        
+        font-size: 1rem;
+        line-height: 1.8;
+        color: #475569;
+        padding-top: 4px;    
+      }
+
+      .member-details strong {
+        color: #1e293b;
+      }
+
+      /* อวาตาร์วงกลมเล็กบนแถบชื่อ (ผูกเข้ากับระบบ Grid) */
+      .avatar-frame {
+        grid-column: 1;
+        grid-row: 1 / span 2; /* ล็อกตำแหน่งซ้ายสุด คลุมส่วนสูงของชื่อและตำแหน่ง */
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        border: 2px solid rgba(255, 255, 255, 0.8);
+        overflow: hidden;
+        flex-shrink: 0;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        transition: transform 0.2s ease;
+      }
+
+      .member-row:hover .avatar-frame {
+        transform: scale(1.08);
+        border-color: #0369a1;
+      }
+
+      .avatar-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        background-color: #f1f5f9;
+      }
+
+     /* ปรับตำแหน่งชื่อสมาชิก (แก้บรรทัดซ้อนกัน) */
+      .member-name {
+        grid-column: 2;
+        grid-row: 1;
+        font-size: 1.05rem;
+        font-weight: 500;
+        color: #1e293b;
+        line-height: 1.4; /* เพิ่มบรรทัดนี้: ให้ช่องไฟระหว่างบรรทัดห่างขึ้นเวลาชื่อตกบรรทัด */
+        word-break: break-word; 
+      }
+
+      /* ปรับตำแหน่งบทบาทสภานักเรียน (แก้บรรทัดซ้อนกัน) */
+      .member-role {
+        grid-column: 2;
+        grid-row: 2;
+        font-size: 0.95rem;
+        color: #0369a1;
+        font-weight: 500;
+        line-height: 1.4; /* เพิ่มบรรทัดนี้: ป้องกันไม่ให้ขึ้นไปชนกับชื่อด้านบน */
+        width: fit-content;
+      }
+
+      /* ไฮไลท์ตกแต่งตำแหน่งประธาน (อยู่ครบถ้วน) */
+      .leader-row {
+        border-left: 4px solid #0369a1;
+      }
+      
+      .leader-row .avatar-frame {
+        width: 54px;
+        height: 54px;
+        border-color: #0369a1;
+      }
+
+      .leader-row .member-name {
+        font-size: 1.15rem;
+        font-weight: 600;
+      }
+      
+      .leader-row .member-role {
+        font-size: 0.95rem;
+        font-weight: 600;
+        background: rgba(3, 105, 161, 0.1);
+        padding: 4px 12px;
+        border-radius: 20px;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(-5px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* Responsive สำหรับมือถือ */
+      /* Responsive สำหรับมือถือ */
+      @media (max-width: 600px) {
         body {
-            min-height: 100vh;
-            background: linear-gradient(180deg, #cbd5e1 0%, #94a3b8 100%);
-            font-family: 'Sarabun', 'Inter', sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            color: #334155; 
-            overflow-y: auto;
-            padding: 20px;
-            padding-top: 150px;
-            -webkit-font-smoothing: antialiased;
+          padding-top: 140px;
         }
-
-        /* แถบเมนูด้านบน */
         .navbar {
-            position: fixed; 
-            top: 0;
-            left: 0;
-            width: 100%;
-            display: flex;
-            justify-content: space-between; 
-            align-items: center;
-            padding: 15px 80px; 
-            background-color: rgba(203, 213, 225, 0.7);
-            backdrop-filter: blur(12px); 
-            -webkit-backdrop-filter: blur(12px);
-            border-bottom: 1px solid rgba(51, 65, 85, 0.08); 
-            z-index: 1000;
+          flex-direction: column;
+          gap: 15px;
+          padding: 20px;
         }
-
-        .navbar .logo-container {
-            display: flex;
-            align-items: center;
-            text-decoration: none;
-        }
-
-        .navbar .logo-img {
-            width: 75px;       
-            height: 75px;      
-            object-fit: contain;
-            border: none;        
-            box-shadow: none;    
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .navbar .logo-container:hover .logo-img {
-            transform: scale(1.05);
-        }
-
         .nav-links {
-            list-style: none;
-            display: flex;
-            gap: 40px; 
+          gap: 20px;
         }
-
-        .nav-links a {
-            text-decoration: none;
-            color: #475569; 
-            font-size: 0.9rem;
-            font-weight: 400;
-            letter-spacing: 0.5px;
-            transition: color 0.3s ease;
-        }
-
-        .nav-links a:hover, 
-        .nav-links a.active {
-            color: #0369a1; 
-            font-weight: 500;
-        }
-
-        /* กล่องครอบเนื้อหา */
-        .container {
-            max-width: 800px;
-            width: 100%;
-            margin-bottom: 80px;
-        }
-
         .main-title {
-            font-family: 'Inter', 'Sarabun', sans-serif;
-            font-size: 2.5rem; 
-            font-weight: 600;
-            letter-spacing: 2px; 
-            color: #1e293b;
-            text-align: center;
-            margin-bottom: 8px;
+          font-size: 2rem;
         }
-
-        .school-name {
-            font-size: 1rem;
-            color: #475569;
-            text-align: center;
-            letter-spacing: 1px;
-            margin-bottom: 50px;
-            font-weight: 400;
-        }
-
-        /* เซกชันกล่องรายชื่อกลุ่ม */
         .section-box {
-            margin-bottom: 40px;
-            width: 100%;
-            background-color: rgba(255, 255, 255, 0.25); 
-            padding: 30px;
-            border-radius: 16px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+          padding: 20px;
         }
-
-        .section-box h2 {
-            font-size: 1.25rem;
-            color: #1e293b;
-            margin-bottom: 20px;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-            border-bottom: 2px solid #64748b; 
-            padding-bottom: 8px;
-        }
-
-        /* ระบบ Dropdown รายชื่อสมาชิก */
-        .member-table {
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .member-row {
-            background: rgba(255, 255, 255, 0.4); 
-            border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            overflow: hidden;
-            transition: all 0.3s ease;
-            display: block; 
-            padding: 0;
-        }
-
-        .member-row[open] {
-            background: rgba(255, 255, 255, 0.85);
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
-        }
-
-        /* แถบสรุปชื่อที่กดคลิกได้ */
         .member-summary {
-            padding: 16px 20px;
-            cursor: pointer;
-            list-style: none;
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            user-select: none;
+          column-gap: 12px;
+          padding: 12px 10px; /* ลดขอบซ้ายขวาลง เพื่อให้มีพื้นที่แสดงตัวหนังสือเพิ่มขึ้น */
         }
-
-        .member-summary::-webkit-details-marker {
-            display: none;
-        }
-
-        .member-summary::after {
-            content: '+';
-            font-family: 'Inter', sans-serif;
-            font-size: 1.3rem;
-            color: #0369a1;
-            margin-left: auto;
-            transition: transform 0.3s ease;
-        }
-
-        .member-row[open] .member-summary::after {
-            content: '−';
-            transform: rotate(180deg);
-        }
-
-        /* ปรับโครงสร้างภายใน: รูปซ้าย ข้อความขวา */
-        .member-content {
-            padding: 0 20px 20px 20px;
-            display: flex;
-            flex-direction: row; 
-            gap: 24px;
-            align-items: flex-start;
-            animation: fadeIn 0.4s ease-out;
-        }
-
-        /* ล็อกสัดส่วนรูปภาพเป็น 9:16 แนวตั้ง */
-        .image-wrapper {
-            position: relative;
-            width: 140px;        
-            padding-top: 248px;  /* อัตราส่วน 9:16 (140 * 16 / 9) */
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
-            flex-shrink: 0;      
-        }
-
-        .member-img {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover; 
-            background-color: #cbd5e1;
-        }
-
-        /* ข้อมูลรายละเอียดด้านขวา */
-        .member-details {
-            flex-grow: 1;        
-            font-size: 1rem;
-            line-height: 1.8;
-            color: #475569;
-            padding-top: 4px;    
-        }
-
-        .member-details strong {
-            color: #1e293b;
-        }
-
-        /* อวาตาร์วงกลมเล็กบนแถบชื่อ */
-        .avatar-frame {
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            border: 2px solid rgba(255, 255, 255, 0.8);
-            overflow: hidden;
-            flex-shrink: 0;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-            transition: transform 0.2s ease;
-        }
-
-        .member-row:hover .avatar-frame {
-            transform: scale(1.08);
-            border-color: #0369a1;
-        }
-
-        .avatar-img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            background-color: #f1f5f9; 
-        }
-
+        
+        /* --- เพิ่ม 2 คลาสนี้ เพื่อลดขนาดอักษรในมือถือ --- */
         .member-name {
-            font-size: 1.05rem;
-            font-weight: 500;
-            color: #1e293b;
+          font-size: 0.95rem; 
         }
-
         .member-role {
-            font-size: 0.95rem;
-            color: #0369a1; 
-            font-weight: 500;
+          font-size: 0.85rem;
+          margin-top: 2px;
         }
+        /* ------------------------------------------- */
 
-        /* ไฮไลท์ตำแหน่งประธาน */
-        .leader-row {
-            border-left: 4px solid #0369a1;
+        .member-content {
+          flex-direction: column;
+          align-items: center;
+          gap: 16px;
         }
-        
-        .leader-row .avatar-frame {
-            width: 54px;
-            height: 54px;
-            border-color: #0369a1;
+        .image-wrapper {
+          width: 160px;
+          padding-top: 284px;
         }
-
-        .leader-row .member-name {
-            font-size: 1.15rem;
-            font-weight: 600;
+        .member-details {
+          width: 100%;
+          text-align: left;
         }
-        
-        .leader-row .member-role {
-            font-size: 0.95rem;
-            font-weight: 600;
-            background: rgba(3, 105, 161, 0.1);
-            padding: 4px 12px;
-            border-radius: 20px;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-5px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Responsive สำหรับมือถือ */
-        @media (max-width: 600px) {
-            body {
-                padding-top: 140px; 
-            }
-            .navbar {
-                flex-direction: column; 
-                gap: 15px;
-                padding: 20px;
-            }
-            .nav-links {
-                gap: 20px;
-            }
-            .main-title {
-                font-size: 2rem;
-            }
-            .section-box {
-                padding: 20px;
-            }
-            .member-summary {
-                gap: 12px;
-                padding: 12px 15px;
-            }
-            .member-content {
-                flex-direction: column;
-                align-items: center;
-                gap: 16px;
-            }
-            .image-wrapper {
-                width: 160px;
-                padding-top: 284px; 
-            }
-            .member-details {
-                width: 100%;
-                text-align: left;
-            }
-        }
+      }
     </style>
-</head>
-<body>
-
-    <!-- แถบเมนู -->
+  </head>
+  <body>
     <nav class="navbar">
-        <a href="index.html" class="logo-container">
-            <img src="logo3.png" alt="2P POWER Logo" class="logo-img">
-        </a>
-        <ul class="nav-links">
-            <li><a href="index.html">HOME</a></li>
-            <li><a href="about.html">ABOUT 2P</a></li>
-            <li><a href="members.html" class="active">MEMBERS</a></li>
-            <li><a href="services.html">SERVICES</a></li>
-            <li><a href="contact.html">CONTACT</a></li>
-        </ul>
+      <a href="index.html" class="logo-container">
+        <img src="logo3.png" alt="2P POWER Logo" class="logo-img" />
+      </a>
+      <ul class="nav-links">
+        <li><a href="index.html">HOME</a></li>
+        <li><a href="about.html">ABOUT 2P</a></li>
+        <li><a href="members.html" class="active">MEMBERS</a></li>
+        <li><a href="services.html">SERVICES</a></li>
+        <li><a href="contact.html">CONTACT</a></li>
+      </ul>
     </nav>
 
-    <!-- กล่องหลัก -->
     <div class="container">
-        
-        <h1 class="main-title">Members 2P POWER</h1>
-        <p class="school-name">รายชื่อสมาชิกผู้ลงสมัครรับเลือกตั้งสภานักเรียนโรงเรียนท่ามะกาวิทยาคม ปีการศึกษา 2569</p>
+      <h1 class="main-title">Members 2P TRUE POWERs</h1>
+      <p class="school-name">
+        รายชื่อสมาชิกผู้ลงสมัครรับเลือกตั้งสภานักเรียนโรงเรียนท่ามะกาวิทยาคม
+        ปีการศึกษา 2569
+      </p>
 
-        <!-- กลุ่มที่ 1: ฝ่ายบริหารหลัก -->
-        <div class="section-box">
-            <h2>ผู้ลงสมัครรับเลือกตั้งตำแหน่งกรรมการสภานักเรียน</h2>
-            <div class="member-table">
-                
-                <!-- ประธานสภานักเรียน -->
-                <details class="member-row leader-row">
-                    <summary class="member-summary">
-                        <div class="avatar-frame">
-                            <img src="kuy.jpg" alt="ประธาน" class="avatar-img">
-                        </div>
-                        <span class="member-name">นาย กัณตพัฑน์ เพ็งจันทร์ (กู๊ด)</span>
-                        <span class="member-role">ประธานสภานักเรียน</span>
-                    </summary>
-                    <div class="member-content">
-                        <div class="image-wrapper">
-                            <img src="good.jpg" alt="นายกัณตพัฑน์ เพ็งจันทร์" class="member-img">
-                        </div>
-                        <div class="member-details">
-                            <p><strong>ระดับชั้น:</strong> มัธยมศึกษาปีที่ 5/2</p>
-                            <p><strong>วิสัยทัศน์/หน้าที่:</strong>เป็นผู้นำและตัวแทนของนักเรียนในการขับเคลื่อนกิจกรรมต่างๆ ประสานงานระหว่างนักเรียน ครู และผู้บริหารโรงเรียน วางแผนและนำเสนอโครงการหรือกิจกรรมต่างๆ ที่เป็นประโยชน์ต่อนักเรียนและส่วนรวม</p>
-                        </div>
-                    </div>
-                </details>
-
-                <!-- รองประธานคนที่ 1 -->
-                <details class="member-row">
-                    <summary class="member-summary">
-                        <div class="avatar-frame">
-                            <img src="new.jpg" alt="สมาชิก" class="avatar-img">
-                        </div>
-                        <span class="member-name">นาย ภูวดล จัดละ (นิว)</span>
-                        <span class="member-role">รองประธานคนที่ 1</span>
-                    </summary>
-                    <div class="member-content">
-                        <div class="image-wrapper">
-                            <img src="vice1.jpg" alt="สมาชิก" class="member-img">
-                        </div>
-                        <div class="member-details">
-                            <p><strong>ระดับชั้น:</strong> มัธยมศึกษาปีที่ 5/2</p>
-                            <p><strong>รายละเอียดงาน:</strong> เป็นตัวแทนของประธานในการลงพื้นที่พบปะนักเรียนเพื่อรับฟังปัญหาและความต้องการ นำมาปรับแก้แนวทางการหาเสียงให้ตรงจุด </p>
-                        </div>
-                    </div>
-                </details>
-
-                <!-- รองประธานคนที่ 2 -->
-                <details class="member-row">
-                    <summary class="member-summary">
-                        <div class="avatar-frame">
-                            <img src="vice2.jpg" alt="สมาชิก" class="avatar-img">
-                        </div>
-                        <span class="member-name">นางสาว ญาณพัฒน์ ทองน่วม (กู๊ด)</span>
-                        <span class="member-role">รองประธานคนที่ 2</span>
-                    </summary>
-                    <div class="member-content">
-                        <div class="image-wrapper">
-                            <img src="vice2.jpg" alt="สมาชิก" class="member-img">
-                        </div>
-                        <div class="member-details">
-                            <p><strong>ระดับชั้น:</strong> มัธยมศึกษาปีที่ 5/2</p>
-                            <p><strong>รายละเอียดงาน:</strong>เป็นผู้ร่วมกับประธานในการคิดค้นและออกแบบนโยบายที่ตอบโจทย์ความต้องการของนักเรียน</p>
-                        </div>
-                    </div>
-                </details>
-
-                <!-- เหรัญญิก -->
-                <details class="member-row">
-                    <summary class="member-summary">
-                        <div class="avatar-frame">
-                            <img src="treasurer.jpg" alt="สมาชิก" class="avatar-img">
-                        </div>
-                        <span class="member-name">นางสาว ปาลิตา อรภักดี (ปาย)</span>
-                        <span class="member-role">เหรัญญิก</span>
-                    </summary>
-                    <div class="member-content">
-                        <div class="image-wrapper">
-                            <img src="treasurer.jpg" alt="สมาชิก" class="member-img">
-                        </div>
-                        <div class="member-details">
-                            <p><strong>ระดับชั้น:</strong> มัธยมศึกษาปีที่ 5/3</p>
-                            <p><strong>รายละเอียดงาน:</strong>บริหารจัดการและควบคุมดูแลงานด้านการเงินของสภานักเรียน ดูแลรักษางบประมาณเบิกจ่ายสำหรับจัดกิจกรรม และจัดทำรายงานทางการเงินเพื่อใช้ตรวจสอบความโปร่งใส</p>
-                        </div>
-                    </div>
-                </details>
-
-                <!-- เลขานุการ -->
-                <details class="member-row">
-                    <summary class="member-summary">
-                        <div class="avatar-frame">
-                            <img src="secretary.jpg" alt="สมาชิก" class="avatar-img">
-                        </div>
-                        <span class="member-name">นางสาว ปรียานุช บัวบาล (เกรซ)</span>
-                        <span class="member-role">เลขานุการ</span>
-                    </summary>
-                    <div class="member-content">
-                        <div class="image-wrapper">
-                            <img src="secretary.jpg" alt="สมาชิก" class="member-img">
-                        </div>
-                        <div class="member-details">
-                            <p><strong>ระดับชั้น:</strong> มัธยมศึกษาปีที่ 5/4</p>
-                            <p><strong>รายละเอียดงาน:</strong> ดูแลและจัดเก็บงานเอกสารสำคัญและการประสานงาน เพื่อให้การดำเนินงานของสภานักเรียนเป็นไปอย่างราบรื่นและเป็นระบบ</p>
-                        </div>
-                    </div>
-                </details>
-
+      <div class="section-box">
+        <h2>ผู้ลงสมัครรับเลือกตั้งตำแหน่งกรรมการสภานักเรียน</h2>
+        <div class="member-table">
+          <details class="member-row leader-row">
+            <summary class="member-summary">
+              <div class="avatar-frame">
+                <img src="kuy.jpg" alt="ประธาน" class="avatar-img" />
+              </div>
+              <span class="member-name">นาย กัณตพัฑน์ เพ็งจันทร์ (กู๊ด)</span>
+              <span class="member-role">ประธานสภานักเรียน</span>
+            </summary>
+            <div class="member-content">
+              <div class="image-wrapper">
+                <img
+                  src="good.jpg"
+                  alt="นายกัณตพัฑน์ เพ็งจันทร์"
+                  class="member-img"
+                />
+              </div>
+              <div class="member-details">
+                <p><strong>ระดับชั้น:</strong> มัธยมศึกษาปีที่ 5/2</p>
+                <p>
+                  <strong>วิสัยทัศน์/หน้าที่:</strong
+                  >เป็นผู้นำและตัวแทนของนักเรียนในการขับเคลื่อนกิจกรรมต่างๆ
+                  ประสานงานระหว่างนักเรียน ครู และผู้บริหารโรงเรียน
+                  วางแผนและนำเสนอโครงการหรือกิจกรรมต่างๆ
+                  ที่เป็นประโยชน์ต่อนักเรียนและส่วนรวม
+                </p>
+              </div>
             </div>
-        </div>
+          </details>
 
-        <!-- กลุ่มที่ 2: คณะทำงาน (จำนวน 24 คน) -->
-        <div class="section-box">
-            <h2>ผู้ลงสมัครรับเลือกตั้งตำแหน่งกรรมการสภานักเรียน</h2>
-            <div class="member-table">
-
-                <!-- คนที่ 1 -->
-                <details class="member-row">
-                    <summary class="member-summary">
-                        <div class="avatar-frame">
-                            <img src="m1.jpg" alt="สมาชิก" class="avatar-img">
-                        </div>
-                        <span class="member-name">นาย จิรยุธร บุญมี (เคน) </span>
-                        <span class="member-role">สมาชิกผู้สมัครสภานักเรียน</span>
-                    </summary>
-                    <div class="member-content">
-                        <div class="image-wrapper">
-                            <img src="m1.jpg" alt="สมาชิก" class="member-img">
-                        </div>
-                        <div class="member-details">
-                            <p><strong>ระดับชั้นชั้น:</strong> มัธยมศึกษาปีที่ 5/1 </p>
-                            <p><strong>ฝ่ายงาน:</strong> สมาชิกผู้สมัครสภานักเรียน</p>
-                            <p><strong>รายละเอียด:</strong> รับฟังความคิดเห็น ปัญหา และความต้องการจากนักเรียน ประพฤติตนเป็นแบบอย่างที่ดี ส่งเสริมกิจกรรมที่เป็นประโยชน์ต่อส่วนรวมและทำงานด้วยความสุจริต</p>
-                        </div>
-                    </div>
-                </details>
-
-                <!-- คนที่ 2 -->
-                <details class="member-row">
-                    <summary class="member-summary">
-                        <div class="avatar-frame">
-                            <img src="m2.jpg" alt="สมาชิก" class="avatar-img">
-                        </div>
-                        <span class="member-name">นาย ธนกร มารอด (ภู)</span>
-                        <span class="member-role">สมาชิกผู้สมัครสภานักเรียน</span>
-                    </summary>
-                    <div class="member-content">
-                        <div class="image-wrapper">
-                            <img src="m2.jpg" alt="สมาชิก" class="member-img">
-                        </div>
-                        <div class="member-details">
-                            <p><strong>ระดับชั้นชั้น:</strong> มัธยมศึกษาปีที่ 5/1 </p>
-                            <p><strong>ฝ่ายงาน:</strong> สมาชิกผู้สมัครสภานักเรียน</p>
-                            <p><strong>รายละเอียด:</strong> รับฟังความคิดเห็น ปัญหา และความต้องการจากนักเรียน ประพฤติตนเป็นแบบอย่างที่ดี ส่งเสริมกิจกรรมที่เป็นประโยชน์ต่อส่วนรวมและทำงานด้วยความสุจริต</p>
-                        </div>
-                    </div>
-                </details>
-
-                <!-- คนที่ 3 -->
-                <details class="member-row">
-                    <summary class="member-summary">
-                        <div class="avatar-frame">
-                            <img src="m3.jpg" alt="สมาชิก" class="avatar-img">
-                        </div>
-                        <span class="member-name">นาย ธนกฤต ฟักโต (ดิว)</span>
-                        <span class="member-role">สมาชิกผู้สมัครสภานักเรียน</span>
-                    </summary>
-                    <div class="member-content">
-                        <div class="image-wrapper">
-                            <img src="m3.jpg" alt="สมาชิก" class="member-img">
-                        </div>
-                        <div class="member-details">
-                           <p><strong>ระดับชั้นชั้น:</strong> มัธยมศึกษาปีที่ 5/1 </p>
-                            <p><strong>ฝ่ายงาน:</strong> สมาชิกผู้สมัครสภานักเรียน</p>
-                            <p><strong>รายละเอียด:</strong> รับฟังความคิดเห็น ปัญหา และความต้องการจากนักเรียน ประพฤติตนเป็นแบบอย่างที่ดี ส่งเสริมกิจกรรมที่เป็นประโยชน์ต่อส่วนรวมและทำงานด้วยความสุจริต</p>
-                        </div>
-                    </div>
-                </details>
-
-                <!-- คนที่ 4 -->
-                <details class="member-row">
-                    <summary class="member-summary">
-                        <div class="avatar-frame">
-                            <img src="m4.jpg" alt="สมาชิก" class="avatar-img">
-                        </div>
-                        <span class="member-name">นาย สรศักดิ์ แก่นน้อย (เต็งหนึ่ง) </span>
-                        <span class="member-role">สมาชิกผู้สมัครสภานักเรียน</span>
-                    </summary>
-                    <div class="member-content">
-                        <div class="image-wrapper">
-                            <img src="m4.jpg" alt="สมาชิก" class="member-img">
-                        </div>
-                        <div class="member-details">
-                            <p><strong>ระดับชั้น:</strong> มัธยมศึกษาปีที่ 5/1</p>
-                            <p><strong>ฝ่ายงาน:</strong>สมาชิกผู้สมัครสภานักเรียน</p>
-                            <p><strong>รายละเอียด:</strong>รับฟังความคิดเห็น ปัญหา และความต้องการจากนักเรียน ประพฤติตนเป็นแบบอย่างที่ดี ส่งเสริมกิจกรรมที่เป็นประโยชน์ต่อส่วนรวมและทำงานด้วยความสุจริต</p>
-                        </div>
-                    </div>
-                </details>
-
-                <!-- คนที่ 5 -->
-                <details class="member-row">
-                    <summary class="member-summary">
-                        <div class="avatar-frame">
-                            <img src="m5.jpg" alt="สมาชิก" class="avatar-img">
-                        </div>
-                        <span class="member-name">นางสาว กุลณัฐ ชมเชย (เค้ก)</span>
-                        <span class="member-role">สมาชิกผู้สมัครสภานักเรียน</span>
-                    </summary>
-                    <div class="member-content">
-                        <div class="image-wrapper">
-                            <img src="m5.jpg" alt="สมาชิก" class="member-img">
-                        </div>
-                        <div class="member-details">
-                            <p><strong>ระดับชั้น:</strong> มัธยมศึกษาปีที่ 5/1</p>
-                            <p><strong>ฝ่ายงาน:</strong> สมาชิกผู้สมัครสภานักเรียน</p>
-                            <p><strong>รายละเอียด:</strong> รับฟังความคิดเห็น ปัญหา และความต้องการจากนักเรียน ประพฤติตนเป็นแบบอย่างที่ดี ส่งเสริมกิจกรรมที่เป็นประโยชน์ต่อส่วนรวมและทำงานด้วยความสุจริต</p>
-                        </div>
-                    </div>
-                </details>
-                 <!-- คนที่ 14 -->
-                <details class="member-row">
-                    <summary class="member-summary">
-                        <div class="avatar-frame">
-                            <img src="m14.jpg" alt="สมาชิก" class="avatar-img">
-                        </div>
-                        <span class="member-name">นางสาว ณัฎฐานันฑ์ มีแยบ  ( ดรีม )</span>
-                        <span class="member-role">สมาชิกผู้สมัครสภานักเรียน</span>
-                    </summary>
-                    <div class="member-content">
-                        <div class="image-wrapper">
-                            <img src="m14.jpg" alt="สมาชิก" class="member-img">
-                        </div>
-                        <div class="member-details">
-                             <p><strong>ระดับชั้นชั้น:</strong> มัธยมศึกษาปีที่ 5/1 </p>
-                            <p><strong>ฝ่ายงาน:</strong> สมาชิกผู้สมัครสภานักเรียน</p>
-                            <p><strong>รายละเอียด:</strong> รับฟังความคิดเห็น ปัญหา และความต้องการจากนักเรียน ประพฤติตนเป็นแบบอย่างที่ดี ส่งเสริมกิจกรรมที่เป็นประโยชน์ต่อส่วนรวมและทำงานด้วยความสุจริต</p>
-                        </div>
-                    </div>
-                </details>
-
-                <!-- คนที่ 6 -->
-                <details class="member-row">
-                    <summary class="member-summary">
-                        <div class="avatar-frame">
-                            <img src="m6.jpg" alt="สมาชิก" class="avatar-img">
-                        </div>
-                        <span class="member-name">นางสาว พิชาทา โชคไพศาลกุล (พีค)</span>
-                        <span class="member-role">สมาชิกผู้สมัครสภานักเรียน</span>
-                    </summary>
-                    <div class="member-content">
-                        <div class="image-wrapper">
-                            <img src="m6.jpg" alt="สมาชิก" class="member-img">
-                        </div>
-                        <div class="member-details">
-                            <p><strong>ระดับชั้น:</strong> มัธยมศึกษาปีที่ 5/1</p>
-                            <p><strong>ฝ่ายงาน:</strong> สมาชิกผู้สมัครสภานักเรียน</p>
-                            <p><strong>รายละเอียด:</strong> รับฟังความคิดเห็น ปัญหา และความต้องการจากนักเรียน ประพฤติตนเป็นแบบอย่างที่ดี ส่งเสริมกิจกรรมที่เป็นประโยชน์ต่อส่วนรวมและทำงานด้วยความสุจริต</p>
-                        </div>
-                    </div>
-                </details>
-
-                  <!-- คนที่ 15 -->
-                <details class="member-row">
-                    <summary class="member-summary">
-                        <div class="avatar-frame">
-                            <img src="m15.jpg" alt="สมาชิก" class="avatar-img">
-                        </div>
-                        <span class="member-name">นางสาวมนัสวัน อัครมณีกาญจน์  (โมแตงค์)</span>
-                        <span class="member-role">สมาชิกผู้สมัครสภานักเรียน</span>
-                    </summary>
-                    <div class="member-content">
-                        <div class="image-wrapper">
-                            <img src="m15.jpg" alt="สมาชิก" class="member-img">
-                        </div>
-                        <div class="member-details">
-                            <p><strong>ระดับชั้นชั้น:</strong> มัธยมศึกษาปีที่ 5/1 </p>
-                            <p><strong>ฝ่ายงาน:</strong> สมาชิกผู้สมัครสภานักเรียน</p>
-                            <p><strong>รายละเอียด:</strong> รับฟังความคิดเห็น ปัญหา และความต้องการจากนักเรียน ประพฤติตนเป็นแบบอย่างที่ดี ส่งเสริมกิจกรรมที่เป็นประโยชน์ต่อส่วนรวมและทำงานด้วยความสุจริต</p>
-                        </div>
-                    </div>
-                </details>
-
-                <!-- คนที่ 7 -->
-                <details class="member-row">
-                    <summary class="member-summary">
-                        <div class="avatar-frame">
-                            <img src="m7.jpg" alt="สมาชิก" class="avatar-img">
-                        </div>
-                        <span class="member-name">นางสาว กมลชนก อภัยชา (มิกซ์) </span>
-                        <span class="member-role">สมาชิกผู้สมัครสภานักเรียน</span>
-                    </summary>
-                    <div class="member-content">
-                        <div class="image-wrapper">
-                            <img src="m7.jpg" alt="สมาชิก" class="member-img">
-                        </div>
-                        <div class="member-details">
-                            <p><strong>ระดับชั้น:</strong> มัธยมศึกษาปีที่ 5/1</p>
-                            <p><strong>ฝ่ายงาน:</strong> สมาชิกผู้สมัครสภานักเรียน</p>
-                            <p><strong>รายละเอียด:</strong> รับฟังความคิดเห็น ปัญหา และความต้องการจากนักเรียน ประพฤติตนเป็นแบบอย่างที่ดี ส่งเสริมกิจกรรมที่เป็นประโยชน์ต่อส่วนรวมและทำงานด้วยความสุจริต</p>
-                        </div>
-                    </div>
-                </details>
-
-                <!-- คนที่ 8 -->
-                <details class="member-row">
-                    <summary class="member-summary">
-                        <div class="avatar-frame">
-                            <img src="m8.jpg" alt="สมาชิก" class="avatar-img">
-                        </div>
-                        <span class="member-name">นางสาว กชพรรณ ผ่องใส (พรีม)</span>
-                        <span class="member-role">สมาชิกผู้สมัครสภานักเรียน</span>
-                    </summary>
-                    <div class="member-content">
-                        <div class="image-wrapper">
-                            <img src="m8.jpg" alt="สมาชิก" class="member-img">
-                        </div>
-                        <div class="member-details">
-                            <p><strong>ระดับชั้น:</strong> มัธยมศึกษาปีที่ 5/1</p>
-                            <p><strong>ฝ่ายงาน:</strong> สมาชิกผู้สมัครสภานักเรียน</p>
-                            <p><strong>รายละเอียด:</strong> รับฟังความคิดเห็น ปัญหา และความต้องการจากนักเรียน ประพฤติตนเป็นแบบอย่างที่ดี ส่งเสริมกิจกรรมที่เป็นประโยชน์ต่อส่วนรวมและทำงานด้วยความสุจริต</p>
-                        </div>
-                    </div>
-                </details>
-
-                <!-- คนที่ 9 -->
-                <details class="member-row">
-                    <summary class="member-summary">
-                        <div class="avatar-frame">
-                            <img src="m9.jpg" alt="สมาชิก" class="avatar-img">
-                        </div>
-                        <span class="member-name">นางสาว ฐิติภัทร เซี่ยงใช่ (ไหม)</span>
-                        <span class="member-role">สมาชิกผู้สมัครสภานักเรียน</span>
-                    </summary>
-                    <div class="member-content">
-                        <div class="image-wrapper">
-                            <img src="m9.jpg" alt="สมาชิก" class="member-img">
-                        </div>
-                        <div class="member-details">
-                            <p><strong>ระดับชั้น:</strong> มัธยมศึกษาปีที่ 5/1</p>
-                            <p><strong>ฝ่ายงาน:</strong> สมาชิกผู้สมัครสภานักเรียน</p>
-                            <p><strong>รายละเอียด:</strong> รับฟังความคิดเห็น ปัญหา และความต้องการจากนักเรียน ประพฤติตนเป็นแบบอย่างที่ดี ส่งเสริมกิจกรรมที่เป็นประโยชน์ต่อส่วนรวมและทำงานด้วยความสุจริต</p>
-                        </div>
-                    </div>
-                </details>
-
-                <!-- คนที่ 10 -->
-                <details class="member-row">
-                    <summary class="member-summary">
-                        <div class="avatar-frame">
-                            <img src="m10.jpg" alt="สมาชิก" class="avatar-img">
-                        </div>
-                        <span class="member-name">นางสาว บุญนิธย์ ชัยวงษ์ (แอ๊ม)</span>
-                        <span class="member-role">สมาชิกผู้สมัครสภานักเรียน</span>
-                    </summary>
-                    <div class="member-content">
-                        <div class="image-wrapper">
-                            <img src="m10.jpg" alt="สมาชิก" class="member-img">
-                        </div>
-                        <div class="member-details">
-                            <p><strong>ระดับชั้น:</strong> มัธยมศึกษาปีที่ 5/1</p>
-                            <p><strong>ฝ่ายงาน:</strong> สมาชิกผู้สมัครสภานักเรียน</p>
-                            <p><strong>รายละเอียด:</strong> รับฟังความคิดเห็น ปัญหา และความต้องการจากนักเรียน ประพฤติตนเป็นแบบอย่างที่ดี ส่งเสริมกิจกรรมที่เป็นประโยชน์ต่อส่วนรวมและทำงานด้วยความสุจริต</p>
-                        </div>
-                    </div>
-                </details>
-
-                <!-- คนที่ 11 -->
-                <details class="member-row">
-                    <summary class="member-summary">
-                        <div class="avatar-frame">
-                            <img src="m11.jpg" alt="สมาชิก" class="avatar-img">
-                        </div>
-                        <span class="member-name">นางสาว ศศิกาญจน์ เกล็ดลิ้น (ใบไผ่)</span>
-                        <span class="member-role">สมาชิกผู้สมัครสภานักเรียน</span>
-                    </summary>
-                    <div class="member-content">
-                        <div class="image-wrapper">
-                            <img src="m11.jpg" alt="สมาชิก" class="member-img">
-                        </div>
-                        <div class="member-details">
-                            <p><strong>ระดับชั้น:</strong> มัธยมศึกษาปีที่ 5/1</p>
-                            <p><strong>ฝ่ายงาน:</strong> สมาชิกผู้สมัครสภานักเรียน</p>
-                            <p><strong>รายละเอียด:</strong> รับฟังความคิดเห็น ปัญหา และความต้องการจากนักเรียน ประพฤติตนเป็นแบบอย่างที่ดี ส่งเสริมกิจกรรมที่เป็นประโยชน์ต่อส่วนรวมและทำงานด้วยความสุจริต</p>
-                        </div>
-                    </div>
-                </details>
-
-                <!-- คนที่ 12 -->
-                <details class="member-row">
-                    <summary class="member-summary">
-                        <div class="avatar-frame">
-                            <img src="m12.jpg" alt="สมาชิก" class="avatar-img">
-                        </div>
-                        <span class="member-name">นาย พัชรพล เสาธง (อิคคิว)</span>
-                        <span class="member-role">สมาชิกผู้สมัครสภานักเรียน</span>
-                    </summary>
-                    <div class="member-content">
-                        <div class="image-wrapper">
-                            <img src="m12.jpg" alt="สมาชิก" class="member-img">
-                        </div>
-                        <div class="member-details">
-                            <p><strong>ระดับชั้น:</strong> มัธยมศึกษาปีที่ 5/2</p>
-                            <p><strong>ฝ่ายงาน:</strong> สมาชิกผู้สมัครสภานักเรียน</p>
-                            <p><strong>รายละเอียด:</strong> รับฟังความคิดเห็น ปัญหา และความต้องการจากนักเรียน ประพฤติตนเป็นแบบอย่างที่ดี ส่งเสริมกิจกรรมที่เป็นประโยชน์ต่อส่วนรวมและทำงานด้วยความสุจริต</p>
-                        </div>
-                    </div>
-                </details>
-
-
-
-                <!-- คนที่ 16 -->
-                <details class="member-row">
-                    <summary class="member-summary">
-                        <div class="avatar-frame">
-                            <img src="m16.jpg" alt="สมาชิก" class="avatar-img">
-                        </div>
-                        <span class="member-name">นาย วรปรัชญ์ ถิ่นจวงจันทร์ (วาเลนไทน์)</span>
-                        <span class="member-role">สมาชิกผู้สมัครสภานักเรียน</span>
-                    </summary>
-                    <div class="member-content">
-                        <div class="image-wrapper">
-                            <img src="m16.jpg" alt="สมาชิก" class="member-img">
-                        </div>
-                        <div class="member-details">
-                            <p><strong>ระดับชั้น:</strong> มัธยมศึกษาปีที่ 5/4</p>
-                            <p><strong>ฝ่ายงาน:</strong> สมาชิกผู้สมัครสภานักเรียน</p>
-                            <p><strong>รายละเอียด:</strong> รับฟังความคิดเห็น ปัญหา และความต้องการจากนักเรียน ประพฤติตนเป็นแบบอย่างที่ดี ส่งเสริมกิจกรรมที่เป็นประโยชน์ต่อส่วนรวมและทำงานด้วยความสุจริต</p>
-                        </div>
-                    </div>
-                </details>
-
-                <!-- คนที่ 17 -->
-                <details class="member-row">
-                    <summary class="member-summary">
-                        <div class="avatar-frame">
-                            <img src="m17.jpg" alt="สมาชิก" class="avatar-img">
-                        </div>
-                        <span class="member-name">นางสาว นิสา ไชยราช (กิ่ง)</span>
-                        <span class="member-role">สมาชิกผู้สมัครสภานักเรียน</span>
-                    </summary>
-                    <div class="member-content">
-                        <div class="image-wrapper">
-                            <img src="m17.jpg" alt="สมาชิก" class="member-img">
-                        </div>
-                        <div class="member-details">
-                            <p><strong>ระดับชั้น:</strong> มัธยมศึกษาปีที่ 5/4</p>
-                            <p><strong>ฝ่ายงาน:</strong> สมาชิกผู้สมัครสภานักเรียน</p>
-                            <p><strong>รายละเอียด:</strong> รับฟังความคิดเห็น ปัญหา และความต้องการจากนักเรียน ประพฤติตนเป็นแบบอย่างที่ดี ส่งเสริมกิจกรรมที่เป็นประโยชน์ต่อส่วนรวมและทำงานด้วยความสุจริต</p>
-                        </div>
-                    </div>
-                </details>
-
-                <!-- คนที่ 18 -->
-                <details class="member-row">
-                    <summary class="member-summary">
-                        <div class="avatar-frame">
-                            <img src="m18.jpg" alt="สมาชิก" class="avatar-img">
-                        </div>
-                        <span class="member-name">นางสาว ธนพร ยิ้มประสิทธิ์  (ออม)</span>
-                        <span class="member-role">สมาชิกผู้สมัครสภานักเรียน</span>
-                    </summary>
-                    <div class="member-content">
-                        <div class="image-wrapper">
-                            <img src="m18.jpg" alt="สมาชิก" class="member-img">
-                        </div>
-                        <div class="member-details">
-                            <p><strong>ระดับชั้น:</strong> มัธยมศึกษาปีที่ 5/9</p>
-                            <p><strong>ฝ่ายงาน:</strong> สมาชิกผู้สมัครสภานักเรียน</p>
-                            <p><strong>รายละเอียด:</strong> รับฟังความคิดเห็น ปัญหา และความต้องการจากนักเรียน ประพฤติตนเป็นแบบอย่างที่ดี ส่งเสริมกิจกรรมที่เป็นประโยชน์ต่อส่วนรวมและทำงานด้วยความสุจริต</p>
-                        </div>
-                    </div>
-                </details>
-
-                <!-- คนที่ 19 -->
-                <details class="member-row">
-                    <summary class="member-summary">
-                        <div class="avatar-frame">
-                            <img src="m19.jpg" alt="สมาชิก" class="avatar-img">
-                        </div>
-                        <span class="member-name">นางสาว ลลิตา สานุ (แบม)</span>
-                        <span class="member-role">สมาชิกผู้สมัครสภานักเรียน</span>
-                    </summary>
-                    <div class="member-content">
-                        <div class="image-wrapper">
-                            <img src="m19.jpg" alt="สมาชิก" class="member-img">
-                        </div>
-                        <div class="member-details">
-                            <p><strong>ระดับชั้น:</strong> มัธยมศึกษาปีที่ 5/9</p>
-                            <p><strong>ฝ่ายงาน:</strong> สมาชิกผู้สมัครสภานักเรียน</p>
-                            <p><strong>รายละเอียด:</strong> รับฟังความคิดเห็น ปัญหา และความต้องการจากนักเรียน ประพฤติตนเป็นแบบอย่างที่ดี ส่งเสริมกิจกรรมที่เป็นประโยชน์ต่อส่วนรวมและทำงานด้วยความสุจริต</p>
-                        </div>
-                    </div>
-                </details>
-
-                <!-- คนที่ 20 -->
-                <details class="member-row">
-                    <summary class="member-summary">
-                        <div class="avatar-frame">
-                            <img src="m20.jpg" alt="สมาชิก" class="avatar-img">
-                        </div>
-                        <span class="member-name">นาย ชรัลวิชญ์ เลาหกาญจนไพบูลย์ (ออกัส)</span>
-                        <span class="member-role">สมาชิกผู้สมัครสภานักเรียน</span>
-                    </summary>
-                    <div class="member-content">
-                        <div class="image-wrapper">
-                            <img src="m20.jpg" alt="สมาชิก" class="member-img">
-                        </div>
-                        <div class="member-details">
-                            <p><strong>ระดับชั้น:</strong> มัธยมศึกษาปีที่ 4/1</p>
-                            <p><strong>ฝ่ายงาน:</strong> สมาชิกผู้สมัครสภานักเรียน</p>
-                            <p><strong>รายละเอียด:</strong> รับฟังความคิดเห็น ปัญหา และความต้องการจากนักเรียน ประพฤติตนเป็นแบบอย่างที่ดี ส่งเสริมกิจกรรมที่เป็นประโยชน์ต่อส่วนรวมและทำงานด้วยความสุจริต</p>
-                        </div>
-                    </div>
-                </details>
-
-                <!-- คนที่ 21 -->
-                <details class="member-row">
-                    <summary class="member-summary">
-                        <div class="avatar-frame">
-                            <img src="m21.jpg" alt="สมาชิก" class="avatar-img">
-                        </div>
-                        <span class="member-name">นาย ณัฏฐกรณ์ ห้วยหงษ์ทอง (คูเปอร์)</span>
-                        <span class="member-role">สมาชิกผู้สมัครสภานักเรียน</span>
-                    </summary>
-                    <div class="member-content">
-                        <div class="image-wrapper">
-                            <img src="m21.jpg" alt="สมาชิก" class="member-img">
-                        </div>
-                        <div class="member-details">
-                            <p><strong>ระดับชั้น:</strong> มัธยมศึกษาปีที่ 4/1</p>
-                            <p><strong>ฝ่ายงาน:</strong> สมาชิกผู้สมัครสภานักเรียน</p>
-                            <p><strong>รายละเอียด:</strong> รับฟังความคิดเห็น ปัญหา และความต้องการจากนักเรียน ประพฤติตนเป็นแบบอย่างที่ดี ส่งเสริมกิจกรรมที่เป็นประโยชน์ต่อส่วนรวมและทำงานด้วยความสุจริต</p>
-                        </div>
-                    </div>
-                </details>
-
-                <!-- คนที่ 22 -->
-                <details class="member-row">
-                    <summary class="member-summary">
-                        <div class="avatar-frame">
-                            <img src="m22.jpg" alt="สมาชิก" class="avatar-img">
-                        </div>
-                        <span class="member-name">นาย ทองธนศักดิ์ ผิวงาม (ทอย)</span>
-                        <span class="member-role">สมาชิกผู้สมัครสภานักเรียน</span>
-                    </summary>
-                    <div class="member-content">
-                        <div class="image-wrapper">
-                            <img src="m22.jpg" alt="สมาชิก" class="member-img">
-                        </div>
-                        <div class="member-details">
-                            <p><strong>ระดับชั้น:</strong> มัธยมศึกษาปีที่ 4/1</p>
-                            <p><strong>ฝ่ายงาน:</strong> สมาชิกผู้สมัครสภานักเรียน</p>
-                            <p><strong>รายละเอียด:</strong> รับฟังความคิดเห็น ปัญหา และความต้องการจากนักเรียน ประพฤติตนเป็นแบบอย่างที่ดี ส่งเสริมกิจกรรมที่เป็นประโยชน์ต่อส่วนรวมและทำงานด้วยความสุจริต</p>
-                        </div>
-                    </div>
-                </details>
-
-                <!-- คนที่ 23 -->
-                <details class="member-row">
-                    <summary class="member-summary">
-                        <div class="avatar-frame">
-                            <img src="m23.jpg" alt="สมาชิก" class="avatar-img">
-                        </div>
-                        <span class="member-name">นางสาว ปภาดา รอดขาว (ลูกแก้ว)</span>
-                        <span class="member-role">สมาชิกผู้สมัครสภานักเรียน</span>
-                    </summary>
-                    <div class="member-content">
-                        <div class="image-wrapper">
-                            <img src="m23.jpg" alt="สมาชิก" class="member-img">
-                        </div>
-                        <div class="member-details">
-                            <p><strong>ระดับชั้น:</strong> มัธยมศึกษาปีที่ 4/1</p>
-                            <p><strong>ฝ่ายงาน:</strong> สมาชิกผู้สมัครสภานักเรียน</p>
-                            <p><strong>รายละเอียด:</strong> รับฟังความคิดเห็น ปัญหา และความต้องการจากนักเรียน ประพฤติตนเป็นแบบอย่างที่ดี ส่งเสริมกิจกรรมที่เป็นประโยชน์ต่อส่วนรวมและทำงานด้วยความสุจริต</p>
-                        </div>
-                    </div>
-                </details>
-
-                <!-- คนที่ 24 -->
-                <details class="member-row">
-                    <summary class="member-summary">
-                        <div class="avatar-frame">
-                            <img src="m24.jpg" alt="สมาชิก" class="avatar-img">
-                        </div>
-                        <span class="member-name">นางสาว พิชชาพร เปรมศักดิ์ (ชะเอม)</span>
-                        <span class="member-role">สมาชิกผู้สมัครสภานักเรียน</span>
-                    </summary>
-                    <div class="member-content">
-                        <div class="image-wrapper">
-                            <img src="m24.jpg" alt="สมาชิก" class="member-img">
-                        </div>
-                        <div class="member-details">
-                            <p><strong>ระดับชั้น:</strong> มัธยมศึกษาปีที่ 4/2</p>
-                            <p><strong>ฝ่ายงาน:</strong> สมาชิกผู้สมัครสภานักเรียน</p>
-                            <p><strong>รายละเอียด:</strong> รับฟังความคิดเห็น ปัญหา และความต้องการจากนักเรียน ประพฤติตนเป็นแบบอย่างที่ดี ส่งเสริมกิจกรรมที่เป็นประโยชน์ต่อส่วนรวมและทำงานด้วยความสุจริต</p>
-                        </div>
-                    </div>
-                </details>
-
-                 <!-- คนที่ 13 -->
-                <details class="member-row">
-                    <summary class="member-summary">
-                        <div class="avatar-frame">
-                            <img src="m13.jpg" alt="สมาชิก" class="avatar-img">
-                        </div>
-                        <span class="member-name">นางสาว จารุวรรณ วงศ์ชัย (พรีม)</span>
-                        <span class="member-role">สมาชิกผู้สมัครสภานักเรียน</span>
-                    </summary>
-                    <div class="member-content">
-                        <div class="image-wrapper">
-                            <img src="m13.jpg" alt="สมาชิก" class="member-img">
-                        </div>
-                        <div class="member-details">
-                            <p><strong>ระดับชั้น:</strong> มัธยมศึกษาปีที่ 4/2</p>
-                            <p><strong>ฝ่ายงาน:</strong> สมาชิกผู้สมัครสภานักเรียน</p>
-                            <p><strong>รายละเอียด:</strong> รับฟังความคิดเห็น ปัญหา และความต้องการจากนักเรียน ประพฤติตนเป็นแบบอย่างที่ดี ส่งเสริมกิจกรรมที่เป็นประโยชน์ต่อส่วนรวมและทำงานด้วยความสุจริต</p>
-                        </div>
-                    </div>
-                </details>
-
-
+          <details class="member-row">
+            <summary class="member-summary">
+              <div class="avatar-frame">
+                <img src="new.jpg" alt="สมาชิก" class="avatar-img" />
+              </div>
+              <span class="member-name">นาย ภูวดล จัดละ (นิว)</span>
+              <span class="member-role">รองประธานคนที่ 1</span>
+            </summary>
+            <div class="member-content">
+              <div class="image-wrapper">
+                <img src="vice1.jpg" alt="สมาชิก" class="member-img" />
+              </div>
+              <div class="member-details">
+                <p><strong>ระดับชั้น:</strong> มัธยมศึกษาปีที่ 5/2</p>
+                <p>
+                  <strong>รายละเอียดงาน:</strong>
+                  เป็นตัวแทนของประธานในการลงพื้นที่พบปะนักเรียนเพื่อรับฟังปัญหาและความต้องการ
+                  นำมาปรับแก้แนวทางการหาเสียงให้ตรงจุด
+                </p>
+              </div>
             </div>
-        </div>
+          </details>
 
+          <details class="member-row">
+            <summary class="member-summary">
+              <div class="avatar-frame">
+                <img src="vice2.jpg" alt="สมาชิก" class="avatar-img" />
+              </div>
+              <span class="member-name">นางสาว ญาณพัฒน์ ทองน่วม (กู๊ด)</span>
+              <span class="member-role">รองประธานคนที่ 2</span>
+            </summary>
+            <div class="member-content">
+              <div class="image-wrapper">
+                <img src="vice2.jpg" alt="สมาชิก" class="member-img" />
+              </div>
+              <div class="member-details">
+                <p><strong>ระดับชั้น:</strong> มัธยมศึกษาปีที่ 5/2</p>
+                <p>
+                  <strong>รายละเอียดงาน:</strong
+                  >เป็นผู้ร่วมกับประธานในการคิดค้นและออกแบบนโยบายที่ตอบโจทย์ความต้องการของนักเรียน
+                </p>
+              </div>
+            </div>
+          </details>
+
+          <details class="member-row">
+            <summary class="member-summary">
+              <div class="avatar-frame">
+                <img src="treasurer.jpg" alt="สมาชิก" class="avatar-img" />
+              </div>
+              <span class="member-name">นางสาว ปาลิตา อรภักดี (ปาย)</span>
+              <span class="member-role">เหรัญญิก</span>
+            </summary>
+            <div class="member-content">
+              <div class="image-wrapper">
+                <img src="treasurer.jpg" alt="สมาชิก" class="member-img" />
+              </div>
+              <div class="member-details">
+                <p><strong>ระดับชั้น:</strong> มัธยมศึกษาปีที่ 5/3</p>
+                <p>
+                  <strong>รายละเอียดงาน:</strong
+                  >บริหารจัดการและควบคุมดูแลงานด้านการเงินของสภานักเรียน
+                  ดูแลรักษางบประมาณเบิกจ่ายสำหรับจัดกิจกรรม
+                  และจัดทำรายงานทางการเงินเพื่อใช้ตรวจสอบความโปร่งใส
+                </p>
+              </div>
+            </div>
+          </details>
+
+          <details class="member-row">
+            <summary class="member-summary">
+              <div class="avatar-frame">
+                <img src="secretary.jpg" alt="สมาชิก" class="avatar-img" />
+              </div>
+              <span class="member-name">นางสาว ปรียานุช บัวบาล (เกรซ)</span>
+              <span class="member-role">เลขานุการ</span>
+            </summary>
+            <div class="member-content">
+              <div class="image-wrapper">
+                <img src="secretary.jpg" alt="สมาชิก" class="member-img" />
+              </div>
+              <div class="member-details">
+                <p><strong>ระดับชั้น:</strong> มัธยมศึกษาปีที่ 5/4</p>
+                <p>
+                  <strong>รายละเอียดงาน:</strong>
+                  ดูแลและจัดเก็บงานเอกสารสำคัญและการประสานงาน
+                  เพื่อให้การดำเนินงานของสภานักเรียนเป็นไปอย่างราบรื่นและเป็นระบบ
+                </p>
+              </div>
+            </div>
+          </details>
+        </div>
+      </div>
+
+      <div class="section-box">
+        <h2>ผู้ลงสมัครรับเลือกตั้งตำแหน่งกรรมการสภานักเรียน</h2>
+        <div class="member-table">
+          <details class="member-row">
+            <summary class="member-summary">
+              <div class="avatar-frame">
+                <img src="m1.jpg" alt="สมาชิก" class="avatar-img" />
+              </div>
+              <span class="member-name">นาย จิรยุธร บุญมี (เคน) </span>
+              <span class="member-role">สมาชิกผู้สมัครสภานักเรียน</span>
+            </summary>
+            <div class="member-content">
+              <div class="image-wrapper">
+                <img src="m1.jpg" alt="สมาชิก" class="member-img" />
+              </div>
+              <div class="member-details">
+                <p><strong>ระดับชั้นชั้น:</strong> มัธยมศึกษาปีที่ 5/1</p>
+                <p><strong>ฝ่ายงาน:</strong> สมาชิกผู้สมัครสภานักเรียน</p>
+                <p>
+                  <strong>รายละเอียด:</strong> รับฟังความคิดเห็น ปัญหา
+                  และความต้องการจากนักเรียน ประพฤติตนเป็นแบบอย่างที่ดี
+                  ส่งเสริมกิจกรรมที่เป็นประโยชน์ต่อส่วนรวมและทำงานด้วยความสุจริต
+                </p>
+              </div>
+            </div>
+          </details>
+
+          <details class="member-row">
+            <summary class="member-summary">
+              <div class="avatar-frame">
+                <img src="m2.jpg" alt="สมาชิก" class="avatar-img" />
+              </div>
+              <span class="member-name">นาย ธนกร มารอด (ภู)</span>
+              <span class="member-role">สมาชิกผู้สมัครสภานักเรียน</span>
+            </summary>
+            <div class="member-content">
+              <div class="image-wrapper">
+                <img src="m2.jpg" alt="สมาชิก" class="member-img" />
+              </div>
+              <div class="member-details">
+                <p><strong>ระดับชั้นชั้น:</strong> มัธยมศึกษาปีที่ 5/1</p>
+                <p><strong>ฝ่ายงาน:</strong> สมาชิกผู้สมัครสภานักเรียน</p>
+                <p>
+                  <strong>รายละเอียด:</strong> รับฟังความคิดเห็น ปัญหา
+                  และความต้องการจากนักเรียน ประพฤติตนเป็นแบบอย่างที่ดี
+                  ส่งเสริมกิจกรรมที่เป็นประโยชน์ต่อส่วนรวมและทำงานด้วยความสุจริต
+                </p>
+              </div>
+            </div>
+          </details>
+
+          <details class="member-row">
+            <summary class="member-summary">
+              <div class="avatar-frame">
+                <img src="m3.jpg" alt="สมาชิก" class="avatar-img" />
+              </div>
+              <span class="member-name">นาย ธนกฤต ฟักโต (ดิว)</span>
+              <span class="member-role">สมาชิกผู้สมัครสภานักเรียน</span>
+            </summary>
+            <div class="member-content">
+              <div class="image-wrapper">
+                <img src="m3.jpg" alt="สมาชิก" class="member-img" />
+              </div>
+              <div class="member-details">
+                <p><strong>ระดับชั้นชั้น:</strong> มัธยมศึกษาปีที่ 5/1</p>
+                <p><strong>ฝ่ายงาน:</strong> สมาชิกผู้สมัครสภานักเรียน</p>
+                <p>
+                  <strong>รายละเอียด:</strong> รับฟังความคิดเห็น ปัญหา
+                  และความต้องการจากนักเรียน ประพฤติตนเป็นแบบอย่างที่ดี
+                  ส่งเสริมกิจกรรมที่เป็นประโยชน์ต่อส่วนรวมและทำงานด้วยความสุจริต
+                </p>
+              </div>
+            </div>
+          </details>
+
+          <details class="member-row">
+            <summary class="member-summary">
+              <div class="avatar-frame">
+                <img src="m4.jpg" alt="สมาชิก" class="avatar-img" />
+              </div>
+              <span class="member-name"
+                >นาย สรศักดิ์ แก่นน้อย (เต็งหนึ่ง)
+              </span>
+              <span class="member-role">สมาชิกผู้สมัครสภานักเรียน</span>
+            </summary>
+            <div class="member-content">
+              <div class="image-wrapper">
+                <img src="m4.jpg" alt="สมาชิก" class="member-img" />
+              </div>
+              <div class="member-details">
+                <p><strong>ระดับชั้น:</strong> มัธยมศึกษาปีที่ 5/1</p>
+                <p><strong>ฝ่ายงาน:</strong>สมาชิกผู้สมัครสภานักเรียน</p>
+                <p>
+                  <strong>รายละเอียด:</strong>รับฟังความคิดเห็น ปัญหา
+                  และความต้องการจากนักเรียน ประพฤติตนเป็นแบบอย่างที่ดี
+                  ส่งเสริมกิจกรรมที่เป็นประโยชน์ต่อส่วนรวมและทำงานด้วยความสุจริต
+                </p>
+              </div>
+            </div>
+          </details>
+
+          <details class="member-row">
+            <summary class="member-summary">
+              <div class="avatar-frame">
+                <img src="m5.jpg" alt="สมาชิก" class="avatar-img" />
+              </div>
+              <span class="member-name">นางสาว กุลณัฐ ชมเชย (เค้ก)</span>
+              <span class="member-role">สมาชิกผู้สมัครสภานักเรียน</span>
+            </summary>
+            <div class="member-content">
+              <div class="image-wrapper">
+                <img src="m5.jpg" alt="สมาชิก" class="member-img" />
+              </div>
+              <div class="member-details">
+                <p><strong>ระดับชั้น:</strong> มัธยมศึกษาปีที่ 5/1</p>
+                <p><strong>ฝ่ายงาน:</strong> สมาชิกผู้สมัครสภานักเรียน</p>
+                <p>
+                  <strong>รายละเอียด:</strong> รับฟังความคิดเห็น ปัญหา
+                  และความต้องการจากนักเรียน ประพฤติตนเป็นแบบอย่างที่ดี
+                  ส่งเสริมกิจกรรมที่เป็นประโยชน์ต่อส่วนรวมและทำงานด้วยความสุจริต
+                </p>
+              </div>
+            </div>
+          </details>
+          <details class="member-row">
+            <summary class="member-summary">
+              <div class="avatar-frame">
+                <img src="m14.jpg" alt="สมาชิก" class="avatar-img" />
+              </div>
+              <span class="member-name">นางสาว ณัฎฐานันฑ์ มีแยบ ( ดรีม )</span>
+              <span class="member-role">สมาชิกผู้สมัครสภานักเรียน</span>
+            </summary>
+            <div class="member-content">
+              <div class="image-wrapper">
+                <img src="m14.jpg" alt="สมาชิก" class="member-img" />
+              </div>
+              <div class="member-details">
+                <p><strong>ระดับชั้นชั้น:</strong> มัธยมศึกษาปีที่ 5/1</p>
+                <p><strong>ฝ่ายงาน:</strong> สมาชิกผู้สมัครสภานักเรียน</p>
+                <p>
+                  <strong>รายละเอียด:</strong> รับฟังความคิดเห็น ปัญหา
+                  และความต้องการจากนักเรียน ประพฤติตนเป็นแบบอย่างที่ดี
+                  ส่งเสริมกิจกรรมที่เป็นประโยชน์ต่อส่วนรวมและทำงานด้วยความสุจริต
+                </p>
+              </div>
+            </div>
+          </details>
+
+          <details class="member-row">
+            <summary class="member-summary">
+              <div class="avatar-frame">
+                <img src="m6.jpg" alt="สมาชิก" class="avatar-img" />
+              </div>
+              <span class="member-name">นางสาว พิชาทา โชคไพศาลกุล (พีค)</span>
+              <span class="member-role">สมาชิกผู้สมัครสภานักเรียน</span>
+            </summary>
+            <div class="member-content">
+              <div class="image-wrapper">
+                <img src="m6.jpg" alt="สมาชิก" class="member-img" />
+              </div>
+              <div class="member-details">
+                <p><strong>ระดับชั้น:</strong> มัธยมศึกษาปีที่ 5/1</p>
+                <p><strong>ฝ่ายงาน:</strong> สมาชิกผู้สมัครสภานักเรียน</p>
+                <p>
+                  <strong>รายละเอียด:</strong> รับฟังความคิดเห็น ปัญหา
+                  และความต้องการจากนักเรียน ประพฤติตนเป็นแบบอย่างที่ดี
+                  ส่งเสริมกิจกรรมที่เป็นประโยชน์ต่อส่วนรวมและทำงานด้วยความสุจริต
+                </p>
+              </div>
+            </div>
+          </details>
+
+          <details class="member-row">
+            <summary class="member-summary">
+              <div class="avatar-frame">
+                <img src="m15.jpg" alt="สมาชิก" class="avatar-img" />
+              </div>
+              <span class="member-name"
+                >นางสาวมนัสวัน อัครมณีกาญจน์ (โมแตงค์)</span
+              >
+              <span class="member-role">สมาชิกผู้สมัครสภานักเรียน</span>
+            </summary>
+            <div class="member-content">
+              <div class="image-wrapper">
+                <img src="m15.jpg" alt="สมาชิก" class="member-img" />
+              </div>
+              <div class="member-details">
+                <p><strong>ระดับชั้นชั้น:</strong> มัธยมศึกษาปีที่ 5/1</p>
+                <p><strong>ฝ่ายงาน:</strong> สมาชิกผู้สมัครสภานักเรียน</p>
+                <p>
+                  <strong>รายละเอียด:</strong> รับฟังความคิดเห็น ปัญหา
+                  และความต้องการจากนักเรียน ประพฤติตนเป็นแบบอย่างที่ดี
+                  ส่งเสริมกิจกรรมที่เป็นประโยชน์ต่อส่วนรวมและทำงานด้วยความสุจริต
+                </p>
+              </div>
+            </div>
+          </details>
+
+          <details class="member-row">
+            <summary class="member-summary">
+              <div class="avatar-frame">
+                <img src="m7.jpg" alt="สมาชิก" class="avatar-img" />
+              </div>
+              <span class="member-name">นางสาว กมลชนก อภัยชา (มิกซ์) </span>
+              <span class="member-role">สมาชิกผู้สมัครสภานักเรียน</span>
+            </summary>
+            <div class="member-content">
+              <div class="image-wrapper">
+                <img src="m7.jpg" alt="สมาชิก" class="member-img" />
+              </div>
+              <div class="member-details">
+                <p><strong>ระดับชั้น:</strong> มัธยมศึกษาปีที่ 5/1</p>
+                <p><strong>ฝ่ายงาน:</strong> สมาชิกผู้สมัครสภานักเรียน</p>
+                <p>
+                  <strong>รายละเอียด:</strong> รับฟังความคิดเห็น ปัญหา
+                  และความต้องการจากนักเรียน ประพฤติตนเป็นแบบอย่างที่ดี
+                  ส่งเสริมกิจกรรมที่เป็นประโยชน์ต่อส่วนรวมและทำงานด้วยความสุจริต
+                </p>
+              </div>
+            </div>
+          </details>
+
+          <details class="member-row">
+            <summary class="member-summary">
+              <div class="avatar-frame">
+                <img src="m8.jpg" alt="สมาชิก" class="avatar-img" />
+              </div>
+              <span class="member-name">นางสาว กชพรรณ ผ่องใส (พรีม)</span>
+              <span class="member-role">สมาชิกผู้สมัครสภานักเรียน</span>
+            </summary>
+            <div class="member-content">
+              <div class="image-wrapper">
+                <img src="m8.jpg" alt="สมาชิก" class="member-img" />
+              </div>
+              <div class="member-details">
+                <p><strong>ระดับชั้น:</strong> มัธยมศึกษาปีที่ 5/1</p>
+                <p><strong>ฝ่ายงาน:</strong> สมาชิกผู้สมัครสภานักเรียน</p>
+                <p>
+                  <strong>รายละเอียด:</strong> รับฟังความคิดเห็น ปัญหา
+                  และความต้องการจากนักเรียน ประพฤติตนเป็นแบบอย่างที่ดี
+                  ส่งเสริมกิจกรรมที่เป็นประโยชน์ต่อส่วนรวมและทำงานด้วยความสุจริต
+                </p>
+              </div>
+            </div>
+          </details>
+
+          <details class="member-row">
+            <summary class="member-summary">
+              <div class="avatar-frame">
+                <img src="m9.jpg" alt="สมาชิก" class="avatar-img" />
+              </div>
+              <span class="member-name">นางสาว ฐิติภัทร เซี่ยงใช่ (ไหม)</span>
+              <span class="member-role">สมาชิกผู้สมัครสภานักเรียน</span>
+            </summary>
+            <div class="member-content">
+              <div class="image-wrapper">
+                <img src="m9.jpg" alt="สมาชิก" class="member-img" />
+              </div>
+              <div class="member-details">
+                <p><strong>ระดับชั้น:</strong> มัธยมศึกษาปีที่ 5/1</p>
+                <p><strong>ฝ่ายงาน:</strong> สมาชิกผู้สมัครสภานักเรียน</p>
+                <p>
+                  <strong>รายละเอียด:</strong> รับฟังความคิดเห็น ปัญหา
+                  และความต้องการจากนักเรียน ประพฤติตนเป็นแบบอย่างที่ดี
+                  ส่งเสริมกิจกรรมที่เป็นประโยชน์ต่อส่วนรวมและทำงานด้วยความสุจริต
+                </p>
+              </div>
+            </div>
+          </details>
+
+          <details class="member-row">
+            <summary class="member-summary">
+              <div class="avatar-frame">
+                <img src="m10.jpg" alt="สมาชิก" class="avatar-img" />
+              </div>
+              <span class="member-name">นางสาว บุญนิธย์ ชัยวงษ์ (แอ๊ม)</span>
+              <span class="member-role">สมาชิกผู้สมัครสภานักเรียน</span>
+            </summary>
+            <div class="member-content">
+              <div class="image-wrapper">
+                <img src="m10.jpg" alt="สมาชิก" class="member-img" />
+              </div>
+              <div class="member-details">
+                <p><strong>ระดับชั้น:</strong> มัธยมศึกษาปีที่ 5/1</p>
+                <p><strong>ฝ่ายงาน:</strong> สมาชิกผู้สมัครสภานักเรียน</p>
+                <p>
+                  <strong>รายละเอียด:</strong> รับฟังความคิดเห็น ปัญหา
+                  และความต้องการจากนักเรียน ประพฤติตนเป็นแบบอย่างที่ดี
+                  ส่งเสริมกิจกรรมที่เป็นประโยชน์ต่อส่วนรวมและทำงานด้วยความสุจริต
+                </p>
+              </div>
+            </div>
+          </details>
+
+          <details class="member-row">
+            <summary class="member-summary">
+              <div class="avatar-frame">
+                <img src="m11.jpg" alt="สมาชิก" class="avatar-img" />
+              </div>
+              <span class="member-name"
+                >นางสาว ศศิกาญจน์ เกล็ดลิ้น (ใบไผ่)</span
+              >
+              <span class="member-role">สมาชิกผู้สมัครสภานักเรียน</span>
+            </summary>
+            <div class="member-content">
+              <div class="image-wrapper">
+                <img src="m11.jpg" alt="สมาชิก" class="member-img" />
+              </div>
+              <div class="member-details">
+                <p><strong>ระดับชั้น:</strong> มัธยมศึกษาปีที่ 5/1</p>
+                <p><strong>ฝ่ายงาน:</strong> สมาชิกผู้สมัครสภานักเรียน</p>
+                <p>
+                  <strong>รายละเอียด:</strong> รับฟังความคิดเห็น ปัญหา
+                  และความต้องการจากนักเรียน ประพฤติตนเป็นแบบอย่างที่ดี
+                  ส่งเสริมกิจกรรมที่เป็นประโยชน์ต่อส่วนรวมและทำงานด้วยความสุจริต
+                </p>
+              </div>
+            </div>
+          </details>
+
+          <details class="member-row">
+            <summary class="member-summary">
+              <div class="avatar-frame">
+                <img src="m12.jpg" alt="สมาชิก" class="avatar-img" />
+              </div>
+              <span class="member-name">นาย พัชรพล เสาธง (อิคคิว)</span>
+              <span class="member-role">สมาชิกผู้สมัครสภานักเรียน</span>
+            </summary>
+            <div class="member-content">
+              <div class="image-wrapper">
+                <img src="m12.jpg" alt="สมาชิก" class="member-img" />
+              </div>
+              <div class="member-details">
+                <p><strong>ระดับชั้น:</strong> มัธยมศึกษาปีที่ 5/2</p>
+                <p><strong>ฝ่ายงาน:</strong> สมาชิกผู้สมัครสภานักเรียน</p>
+                <p>
+                  <strong>รายละเอียด:</strong> รับฟังความคิดเห็น ปัญหา
+                  และความต้องการจากนักเรียน ประพฤติตนเป็นแบบอย่างที่ดี
+                  ส่งเสริมกิจกรรมที่เป็นประโยชน์ต่อส่วนรวมและทำงานด้วยความสุจริต
+                </p>
+              </div>
+            </div>
+          </details>
+
+          <details class="member-row">
+            <summary class="member-summary">
+              <div class="avatar-frame">
+                <img src="m16.jpg" alt="สมาชิก" class="avatar-img" />
+              </div>
+              <span class="member-name"
+                >นาย วรปรัชญ์ ถิ่นจวงจันทร์ (วาเลนไทน์)</span
+              >
+              <span class="member-role">สมาชิกผู้สมัครสภานักเรียน</span>
+            </summary>
+            <div class="member-content">
+              <div class="image-wrapper">
+                <img src="m16.jpg" alt="สมาชิก" class="member-img" />
+              </div>
+              <div class="member-details">
+                <p><strong>ระดับชั้น:</strong> มัธยมศึกษาปีที่ 5/4</p>
+                <p><strong>ฝ่ายงาน:</strong> สมาชิกผู้สมัครสภานักเรียน</p>
+                <p>
+                  <strong>รายละเอียด:</strong> รับฟังความคิดเห็น ปัญหา
+                  และความต้องการจากนักเรียน ประพฤติตนเป็นแบบอย่างที่ดี
+                  ส่งเสริมกิจกรรมที่เป็นประโยชน์ต่อส่วนรวมและทำงานด้วยความสุจริต
+                </p>
+              </div>
+            </div>
+          </details>
+
+          <details class="member-row">
+            <summary class="member-summary">
+              <div class="avatar-frame">
+                <img src="m17.jpg" alt="สมาชิก" class="avatar-img" />
+              </div>
+              <span class="member-name">นางสาว นิสา ไชยราช (กิ่ง)</span>
+              <span class="member-role">สมาชิกผู้สมัครสภานักเรียน</span>
+            </summary>
+            <div class="member-content">
+              <div class="image-wrapper">
+                <img src="m17.jpg" alt="สมาชิก" class="member-img" />
+              </div>
+              <div class="member-details">
+                <p><strong>ระดับชั้น:</strong> มัธยมศึกษาปีที่ 5/4</p>
+                <p><strong>ฝ่ายงาน:</strong> สมาชิกผู้สมัครสภานักเรียน</p>
+                <p>
+                  <strong>รายละเอียด:</strong> รับฟังความคิดเห็น ปัญหา
+                  และความต้องการจากนักเรียน ประพฤติตนเป็นแบบอย่างที่ดี
+                  ส่งเสริมกิจกรรมที่เป็นประโยชน์ต่อส่วนรวมและทำงานด้วยความสุจริต
+                </p>
+              </div>
+            </div>
+          </details>
+
+          <details class="member-row">
+            <summary class="member-summary">
+              <div class="avatar-frame">
+                <img src="m18.jpg" alt="สมาชิก" class="avatar-img" />
+              </div>
+              <span class="member-name">นางสาว ธนพร ยิ้มประสิทธิ์ (ออม)</span>
+              <span class="member-role">สมาชิกผู้สมัครสภานักเรียน</span>
+            </summary>
+            <div class="member-content">
+              <div class="image-wrapper">
+                <img src="m18.jpg" alt="สมาชิก" class="member-img" />
+              </div>
+              <div class="member-details">
+                <p><strong>ระดับชั้น:</strong> มัธยมศึกษาปีที่ 5/9</p>
+                <p><strong>ฝ่ายงาน:</strong> สมาชิกผู้สมัครสภานักเรียน</p>
+                <p>
+                  <strong>รายละเอียด:</strong> รับฟังความคิดเห็น ปัญหา
+                  และความต้องการจากนักเรียน ประพฤติตนเป็นแบบอย่างที่ดี
+                  ส่งเสริมกิจกรรมที่เป็นประโยชน์ต่อส่วนรวมและทำงานด้วยความสุจริต
+                </p>
+              </div>
+            </div>
+          </details>
+
+          <details class="member-row">
+            <summary class="member-summary">
+              <div class="avatar-frame">
+                <img src="m19.jpg" alt="สมาชิก" class="avatar-img" />
+              </div>
+              <span class="member-name">นางสาว ลลิตา สานุ (แบม)</span>
+              <span class="member-role">สมาชิกผู้สมัครสภานักเรียน</span>
+            </summary>
+            <div class="member-content">
+              <div class="image-wrapper">
+                <img src="m19.jpg" alt="สมาชิก" class="member-img" />
+              </div>
+              <div class="member-details">
+                <p><strong>ระดับชั้น:</strong> มัธยมศึกษาปีที่ 5/9</p>
+                <p><strong>ฝ่ายงาน:</strong> สมาชิกผู้สมัครสภานักเรียน</p>
+                <p>
+                  <strong>รายละเอียด:</strong> รับฟังความคิดเห็น ปัญหา
+                  และความต้องการจากนักเรียน ประพฤติตนเป็นแบบอย่างที่ดี
+                  ส่งเสริมกิจกรรมที่เป็นประโยชน์ต่อส่วนรวมและทำงานด้วยความสุจริต
+                </p>
+              </div>
+            </div>
+          </details>
+
+          <details class="member-row">
+            <summary class="member-summary">
+              <div class="avatar-frame">
+                <img src="m20.jpg" alt="สมาชิก" class="avatar-img" />
+              </div>
+              <span class="member-name"
+                >นาย ชรัลวิชญ์ เลาหกาญจนไพบูลย์ (ออกัส)</span
+              >
+              <span class="member-role">สมาชิกผู้สมัครสภานักเรียน</span>
+            </summary>
+            <div class="member-content">
+              <div class="image-wrapper">
+                <img src="m20.jpg" alt="สมาชิก" class="member-img" />
+              </div>
+              <div class="member-details">
+                <p><strong>ระดับชั้น:</strong> มัธยมศึกษาปีที่ 4/1</p>
+                <p><strong>ฝ่ายงาน:</strong> สมาชิกผู้สมัครสภานักเรียน</p>
+                <p>
+                  <strong>รายละเอียด:</strong> รับฟังความคิดเห็น ปัญหา
+                  และความต้องการจากนักเรียน ประพฤติตนเป็นแบบอย่างที่ดี
+                  ส่งเสริมกิจกรรมที่เป็นประโยชน์ต่อส่วนรวมและทำงานด้วยความสุจริต
+                </p>
+              </div>
+            </div>
+          </details>
+
+          <details class="member-row">
+            <summary class="member-summary">
+              <div class="avatar-frame">
+                <img src="m21.jpg" alt="สมาชิก" class="avatar-img" />
+              </div>
+              <span class="member-name"
+                >นาย ณัฏฐกรณ์ ห้วยหงษ์ทอง (คูเปอร์)</span
+              >
+              <span class="member-role">สมาชิกผู้สมัครสภานักเรียน</span>
+            </summary>
+            <div class="member-content">
+              <div class="image-wrapper">
+                <img src="m21.jpg" alt="สมาชิก" class="member-img" />
+              </div>
+              <div class="member-details">
+                <p><strong>ระดับชั้น:</strong> มัธยมศึกษาปีที่ 4/1</p>
+                <p><strong>ฝ่ายงาน:</strong> สมาชิกผู้สมัครสภานักเรียน</p>
+                <p>
+                  <strong>รายละเอียด:</strong> รับฟังความคิดเห็น ปัญหา
+                  และความต้องการจากนักเรียน ประพฤติตนเป็นแบบอย่างที่ดี
+                  ส่งเสริมกิจกรรมที่เป็นประโยชน์ต่อส่วนรวมและทำงานด้วยความสุจริต
+                </p>
+              </div>
+            </div>
+          </details>
+
+          <details class="member-row">
+            <summary class="member-summary">
+              <div class="avatar-frame">
+                <img src="m22.jpg" alt="สมาชิก" class="avatar-img" />
+              </div>
+              <span class="member-name">นาย ทองธนศักดิ์ ผิวงาม (ทอย)</span>
+              <span class="member-role">สมาชิกผู้สมัครสภานักเรียน</span>
+            </summary>
+            <div class="member-content">
+              <div class="image-wrapper">
+                <img src="m22.jpg" alt="สมาชิก" class="member-img" />
+              </div>
+              <div class="member-details">
+                <p><strong>ระดับชั้น:</strong> มัธยมศึกษาปีที่ 4/1</p>
+                <p><strong>ฝ่ายงาน:</strong> สมาชิกผู้สมัครสภานักเรียน</p>
+                <p>
+                  <strong>รายละเอียด:</strong> รับฟังความคิดเห็น ปัญหา
+                  และความต้องการจากนักเรียน ประพฤติตนเป็นแบบอย่างที่ดี
+                  ส่งเสริมกิจกรรมที่เป็นประโยชน์ต่อส่วนรวมและทำงานด้วยความสุจริต
+                </p>
+              </div>
+            </div>
+          </details>
+
+          <details class="member-row">
+            <summary class="member-summary">
+              <div class="avatar-frame">
+                <img src="m23.jpg" alt="สมาชิก" class="avatar-img" />
+              </div>
+              <span class="member-name">นางสาว ปภาดา รอดขาว (ลูกแก้ว)</span>
+              <span class="member-role">สมาชิกผู้สมัครสภานักเรียน</span>
+            </summary>
+            <div class="member-content">
+              <div class="image-wrapper">
+                <img src="m23.jpg" alt="สมาชิก" class="member-img" />
+              </div>
+              <div class="member-details">
+                <p><strong>ระดับชั้น:</strong> มัธยมศึกษาปีที่ 4/1</p>
+                <p><strong>ฝ่ายงาน:</strong> สมาชิกผู้สมัครสภานักเรียน</p>
+                <p>
+                  <strong>รายละเอียด:</strong> รับฟังความคิดเห็น ปัญหา
+                  และความต้องการจากนักเรียน ประพฤติตนเป็นแบบอย่างที่ดี
+                  ส่งเสริมกิจกรรมที่เป็นประโยชน์ต่อส่วนรวมและทำงานด้วยความสุจริต
+                </p>
+              </div>
+            </div>
+          </details>
+
+          <details class="member-row">
+            <summary class="member-summary">
+              <div class="avatar-frame">
+                <img src="m24.jpg" alt="สมาชิก" class="avatar-img" />
+              </div>
+              <span class="member-name">นางสาว พิชชาพร เปรมศักดิ์ (ชะเอม)</span>
+              <span class="member-role">สมาชิกผู้สมัครสภานักเรียน</span>
+            </summary>
+            <div class="member-content">
+              <div class="image-wrapper">
+                <img src="m24.jpg" alt="สมาชิก" class="member-img" />
+              </div>
+              <div class="member-details">
+                <p><strong>ระดับชั้น:</strong> มัธยมศึกษาปีที่ 4/2</p>
+                <p><strong>ฝ่ายงาน:</strong> สมาชิกผู้สมัครสภานักเรียน</p>
+                <p>
+                  <strong>รายละเอียด:</strong> รับฟังความคิดเห็น ปัญหา
+                  และความต้องการจากนักเรียน ประพฤติตนเป็นแบบอย่างที่ดี
+                  ส่งเสริมกิจกรรมที่เป็นประโยชน์ต่อส่วนรวมและทำงานด้วยความสุจริต
+                </p>
+              </div>
+            </div>
+          </details>
+
+          <details class="member-row">
+            <summary class="member-summary">
+              <div class="avatar-frame">
+                <img src="m13.jpg" alt="สมาชิก" class="avatar-img" />
+              </div>
+              <span class="member-name">นางสาว จารุวรรณ วงศ์ชัย (พรีม)</span>
+              <span class="member-role">สมาชิกผู้สมัครสภานักเรียน</span>
+            </summary>
+            <div class="member-content">
+              <div class="image-wrapper">
+                <img src="m13.jpg" alt="สมาชิก" class="member-img" />
+              </div>
+              <div class="member-details">
+                <p><strong>ระดับชั้น:</strong> มัธยมศึกษาปีที่ 4/2</p>
+                <p><strong>ฝ่ายงาน:</strong> สมาชิกผู้สมัครสภานักเรียน</p>
+                <p>
+                  <strong>รายละเอียด:</strong> รับฟังความคิดเห็น ปัญหา
+                  และความต้องการจากนักเรียน ประพฤติตนเป็นแบบอย่างที่ดี
+                  ส่งเสริมกิจกรรมที่เป็นประโยชน์ต่อส่วนรวมและทำงานด้วยความสุจริต
+                </p>
+              </div>
+            </div>
+          </details>
+        </div>
+      </div>
     </div>
-
-</body>
+  </body>
 </html>
